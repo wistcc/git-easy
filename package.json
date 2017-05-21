@@ -1,10 +1,14 @@
 {
   "name": "git-easy",
-  "version": "1.0.0",
+ "productName": "Git Easy",
+  "version": "0.1.0",
   "description": "Open git project easily",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds",
+    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Git Easy\"",
+    "package-linux" : "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds"
   },
   "repository": "https://github.com/wistcc/git-easy",
   "keywords": [
@@ -16,6 +20,7 @@
   "author": "wistcc <wistcc@gmail.com> http://winnercrespo.com",
   "license": "ISC",
   "devDependencies": {
-    "electron": "~1.6.2"
+    "electron": "~1.6.2",
+    "electron-packager": "^8.7.0"
   }
 }

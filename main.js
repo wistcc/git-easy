@@ -1,11 +1,9 @@
-const electron = require('electron')
-// Module to control application life.
-const app = electron.app
-// Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow
+const {app, BrowserWindow, globalShortcut} = require('electron');
+const path = require('path');
+const url = require('url');
+const {ipcMain} = require('electron');
 
-const path = require('path')
-const url = require('url')
+let isBrowsing = false;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -13,7 +11,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 300, height: 450})
+  mainWindow = new BrowserWindow({width: 300, height: 450, show: false, skipTaskbar: true})
   
   mainWindow.setMenu(null);
 
@@ -24,8 +22,19 @@ function createWindow () {
     slashes: true
   }))
 
+  globalShortcut.register('CommandOrControl+Shift+`', () => {
+    mainWindow.show();
+  });
+
+  mainWindow.on('blur', function() {
+    if(!isBrowsing) {
+      mainWindow.hide();
+    }
+    isBrowsing = false;
+  });
+
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -58,5 +67,6 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+ipcMain.on('mark-as-browsing', () => {
+  isBrowsing = true;
+});
