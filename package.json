@@ -1,0 +1,21 @@
+{
+  "name": "git-easy",
+  "version": "1.0.0",
+  "description": "Open git project easily",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/wistcc/git-easy",
+  "keywords": [
+    "Electron",
+    "git",
+    "easy",
+    "open"
+  ],
+  "author": "wistcc <wistcc@gmail.com> http://winnercrespo.com",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "~1.6.2"
+  }
+}
