@@ -1,7 +1,6 @@
-const {app, BrowserWindow, globalShortcut} = require('electron');
+const {app, BrowserWindow, globalShortcut, ipcMain} = require('electron');
 const path = require('path');
 const url = require('url');
-const {ipcMain} = require('electron');
 
 let isBrowsing = false;
 
@@ -20,7 +19,7 @@ function createWindow () {
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
-  }))
+  }));
 
   globalShortcut.register('CommandOrControl+Shift+`', () => {
     mainWindow.show();
