@@ -1,6 +1,7 @@
 const {dialog} = require('electron').remote;
 const {ipcRenderer} = require('electron');
 const storage = require('./src/storage');
+const command = require('./src/command');
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -15,22 +16,19 @@ directories.forEach(directory => {
     option.value = directory;
     option.innerHTML = directory;
     savedDirectories.appendChild(option);
+});
 
-    const subDirectories = fs.readdirSync(directory)
-        .filter(file => fs.lstatSync(path.join(directory, file)).isDirectory());
-
-    subDirectories.forEach(subDirectory => {
-        var button = document.createElement('button');
-        button.innerHTML = subDirectory;
-        button.className = 'directoryButton';
-        button.setAttribute('data-path', `${directory} /${subDirectory}`);
-
-        button.addEventListener("click", (e) => {            
-            child_process.exec(`cd C:/ && cd ${e.srcElement.getAttribute('data-path')} && start "" "C:/Program Files/Git/bin/sh.exe" --login -i`)
-        });
-
-        directoryList.appendChild(button);
+const subDirectories = fs.readdirSync(directories[0])
+    .filter(file => fs.lstatSync(path.join(directories[0], file)).isDirectory());
+subDirectories.forEach(subDirectory => {
+    var button = document.createElement('button');
+    button.innerHTML = subDirectory;
+    button.className = 'directoryButton';
+    button.setAttribute('data-path', `${directories[0]} /${subDirectory}`);
+    button.addEventListener("click", (e) => {            
+        command.exec(e.srcElement.getAttribute('data-path'));
     });
+    directoryList.appendChild(button);
 });
 
 browseButton.addEventListener("click", () => {

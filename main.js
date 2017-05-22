@@ -11,7 +11,7 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 300, height: 450, show: false, skipTaskbar: true})
+  mainWindow = new BrowserWindow({width: 350, height: 450, show: false, skipTaskbar: true, frame: false})
   
   mainWindow.setMenu(null);
 
