@@ -14,6 +14,8 @@ var consoleList = document.getElementById('consoleList');
 
 var directories = storage.getDirectories();
 const defaultConsoles = consoles.get();
+const lastDirectory = storage.getLastDirectory();
+const lastConsole = storage.getLastConsole();
 
 const appendDirectories = (directory) => {
     while (directoryList.hasChildNodes()) {
@@ -44,6 +46,11 @@ for(con in defaultConsoles){
     var option = document.createElement('option');
     option.value = con;
     option.innerHTML = con;
+    console.log(lastConsole)
+    if(lastConsole && lastConsole === con) {
+        option.selected = true;
+    }
+
     consoleList.appendChild(option);
 }
 
@@ -51,16 +58,28 @@ directories.forEach(directory => {
     var option = document.createElement('option');
     option.value = directory;
     option.innerHTML = directory;
+    
+    if(lastDirectory && lastDirectory === directory) {
+        option.selected = true;
+    }
+
     savedDirectories.appendChild(option);
+});
+
+consoleList.addEventListener('change', (e) => {
+    const list = e.srcElement;
+    const option = list.options[list.selectedIndex].value;
+    storage.setLastConsole(option);
 });
 
 savedDirectories.addEventListener('change', (e) => {
     const list = e.srcElement;
     const option = list.options[list.selectedIndex].value;
+    storage.setLastDirectory(option);
     appendDirectories(option);
 });
 
-appendDirectories(directories[0]);
+appendDirectories(lastDirectory || directories[0]);
 
 browseButton.addEventListener("click", () => {
     ipcRenderer.send('mark-as-browsing');
