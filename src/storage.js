@@ -15,8 +15,8 @@ function load() {
     if (!fs.existsSync(dataFilePath)) {
         data = {};
         data[directoriesKey] = [];
-        data[lastDirectory] = null;
-        data[lastConsole] = null;
+        data[lastDirectory] = undefined;
+        data[lastConsole] = undefined;
         return;
     }
 
@@ -63,7 +63,9 @@ exports.getLastDirectory = function () {
 
 exports.setDirectories = function (value) {
     load();
-    data[directoriesKey].push(value);
+    if(!data[directoriesKey].includes(value)) {
+        data[directoriesKey].push(value);
+    }
     save();
 }
 
@@ -81,7 +83,7 @@ exports.getDirectories = function () {
 exports.deleteDirectory = function (index) { 
     load();
     if (directoriesKey in data) {
-        delete data[directoriesKey][index];
+        data[directoriesKey].splice(index, 1);
         save();
     }
 }

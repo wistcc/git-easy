@@ -8,18 +8,21 @@ const command = require('./src/command');
 const consoles = require('./src/consoles');
 
 var browseButton = document.getElementById('browseButton');
+var removeButton = document.getElementById('removeButton');
 var savedDirectories = document.getElementById('savedDirectories');
 var directoryList = document.getElementById('directoryList');
 var consoleList = document.getElementById('consoleList');
 
-var directories = storage.getDirectories();
 const defaultConsoles = consoles.get();
-const lastDirectory = storage.getLastDirectory();
 const lastConsole = storage.getLastConsole();
 
 const appendDirectories = (directory) => {
     while (directoryList.hasChildNodes()) {
         directoryList.removeChild(directoryList.lastChild);
+    }
+
+    if(!directory) {
+        return;
     }
     
     const subDirectories = fs.readdirSync(directory)
@@ -42,29 +45,37 @@ const appendDirectories = (directory) => {
     });
 };
 
+const appendSavedDirectories = () => {
+    while (savedDirectories.hasChildNodes()) {
+        savedDirectories.removeChild(savedDirectories.lastChild);
+    }
+    
+    var directories = storage.getDirectories();
+    const lastDirectory = storage.getLastDirectory();
+    directories.forEach(directory => {
+        var option = document.createElement('option');
+        option.value = directory;
+        option.innerHTML = directory;
+        
+        if(lastDirectory && lastDirectory === directory) {
+            option.selected = true;
+        }
+
+        savedDirectories.appendChild(option);
+    });
+};
+
 for(con in defaultConsoles){
     var option = document.createElement('option');
     option.value = con;
     option.innerHTML = con;
-    console.log(lastConsole)
+
     if(lastConsole && lastConsole === con) {
         option.selected = true;
     }
 
     consoleList.appendChild(option);
 }
-
-directories.forEach(directory => {
-    var option = document.createElement('option');
-    option.value = directory;
-    option.innerHTML = directory;
-    
-    if(lastDirectory && lastDirectory === directory) {
-        option.selected = true;
-    }
-
-    savedDirectories.appendChild(option);
-});
 
 consoleList.addEventListener('change', (e) => {
     const list = e.srcElement;
@@ -79,7 +90,17 @@ savedDirectories.addEventListener('change', (e) => {
     appendDirectories(option);
 });
 
-appendDirectories(lastDirectory || directories[0]);
+appendSavedDirectories();
+appendDirectories(storage.getLastDirectory() || storage.getDirectories()[0]);
+
+removeButton.addEventListener("click", () => {
+    storage.deleteDirectory(savedDirectories.selectedIndex);
+
+    const currentDirectory = storage.getDirectories()[0];
+    appendDirectories(currentDirectory);
+    storage.setLastDirectory(currentDirectory);
+    appendSavedDirectories();
+});
 
 browseButton.addEventListener("click", () => {
     ipcRenderer.send('mark-as-browsing');
@@ -88,8 +109,9 @@ browseButton.addEventListener("click", () => {
     });
 
     if(paths) {
-        paths.forEach(path => {
-            storage.setDirectories(path);
-        });
+        storage.setDirectories(paths[0]);
+        appendDirectories(paths[0]);
+        storage.setLastDirectory(paths[0]);
+        appendSavedDirectories();
     }
 });
