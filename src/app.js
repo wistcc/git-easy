@@ -11,9 +11,34 @@ var browseButton = document.getElementById('browseButton');
 var savedDirectories = document.getElementById('savedDirectories');
 var directoryList = document.getElementById('directoryList');
 var consoleList = document.getElementById('consoleList');
-var directories = storage.getDirectories();
 
+var directories = storage.getDirectories();
 const defaultConsoles = consoles.get();
+
+const appendDirectories = (directory) => {
+    while (directoryList.hasChildNodes()) {
+        directoryList.removeChild(directoryList.lastChild);
+    }
+    
+    const subDirectories = fs.readdirSync(directory)
+        .filter(file => fs.lstatSync(path.join(directory, file)).isDirectory());
+
+    subDirectories.forEach(subDirectory => {
+        var button = document.createElement('button');
+        button.innerHTML = subDirectory;
+        button.className = 'directoryButton';
+        button.setAttribute('data-path', `${directory} /${subDirectory}`);
+
+        button.addEventListener("click", (e) => { 
+            var list = document.getElementById("consoleList");
+            var con = list.options[list.selectedIndex].value;
+
+            command.exec(e.srcElement.getAttribute('data-path'), con);
+        });
+
+        directoryList.appendChild(button);
+    });
+};
 
 for(con in defaultConsoles){
     var option = document.createElement('option');
@@ -29,24 +54,13 @@ directories.forEach(directory => {
     savedDirectories.appendChild(option);
 });
 
-const subDirectories = fs.readdirSync(directories[0])
-    .filter(file => fs.lstatSync(path.join(directories[0], file)).isDirectory());
-    
-subDirectories.forEach(subDirectory => {
-    var button = document.createElement('button');
-    button.innerHTML = subDirectory;
-    button.className = 'directoryButton';
-    button.setAttribute('data-path', `${directories[0]} /${subDirectory}`);
-
-    button.addEventListener("click", (e) => { 
-        var list = document.getElementById("consoleList");
-        var con = list.options[list.selectedIndex].value;
-
-        command.exec(e.srcElement.getAttribute('data-path'), con);
-    });
-
-    directoryList.appendChild(button);
+savedDirectories.addEventListener('change', (e) => {
+    const list = e.srcElement;
+    const option = list.options[list.selectedIndex].value;
+    appendDirectories(option);
 });
+
+appendDirectories(directories[0]);
 
 browseButton.addEventListener("click", () => {
     ipcRenderer.send('mark-as-browsing');
