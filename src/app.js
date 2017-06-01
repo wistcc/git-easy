@@ -32,7 +32,7 @@ const appendDirectories = (directory) => {
         var button = document.createElement('button');
         button.innerHTML = subDirectory;
         button.className = 'directoryButton';
-        button.setAttribute('data-path', `${directory} /${subDirectory}`);
+        button.setAttribute('data-path', `${directory}/${subDirectory}`);
 
         button.addEventListener("click", (e) => { 
             var list = document.getElementById("consoleList");
