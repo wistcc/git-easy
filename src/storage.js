@@ -15,8 +15,8 @@ function load() {
     if (!fs.existsSync(dataFilePath)) {
         data = {};
         data[directoriesKey] = [];
-        data[lastDirectory] = undefined;
-        data[lastConsole] = undefined;
+        data[lastDirectoryKey] = undefined;
+        data[lastConsoleKey] = undefined;
         return;
     }
 
