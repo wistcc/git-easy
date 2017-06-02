@@ -24,9 +24,13 @@ const appendDirectories = (directory) => {
     if(!directory) {
         return;
     }
-    
+
     const subDirectories = fs.readdirSync(directory)
-        .filter(file => fs.lstatSync(path.join(directory, file)).isDirectory());
+        .filter(file => {
+            const currentPath = path.join(directory, file);
+            return fs.lstatSync(currentPath).isDirectory() &&
+                fs.readdirSync(currentPath).indexOf(".git") > -1;
+        });
 
     subDirectories.forEach(subDirectory => {
         var button = document.createElement('button');
