@@ -21,6 +21,7 @@ body {
 }
 
 .content {
+    -webkit-app-region: drag;
     margin-top: 10px;
     position: absolute;
     top: 80px;
@@ -86,6 +87,7 @@ body {
 }
 
 .directoryButton {
+    -webkit-app-region: no-drag;
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	-ms-appearance: none;
