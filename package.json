@@ -1,6 +1,6 @@
 {
   "name": "git-easy",
- "productName": "Git Easy",
+  "productName": "Git Easy",
   "version": "0.1.0",
   "description": "Open git project easily",
   "main": "main.js",
@@ -8,7 +8,9 @@
     "start": "electron .",
     "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds",
     "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Git Easy\"",
-    "package-linux" : "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds"
+    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds",
+    "create-installer-mac": "electron-installer-dmg ./release-builds/Git\\ Easy-darwin-x64/Git\\ Easy.app git-easy --out=release-builds --overwrite",
+    "create-installer-win": "node installers/win/createInstaller.js"
   },
   "repository": "https://github.com/wistcc/git-easy",
   "keywords": [
@@ -21,6 +23,8 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "~1.6.2",
-    "electron-packager": "^8.7.0"
+    "electron-installer-dmg": "^0.2.1",
+    "electron-packager": "^8.7.0",
+    "electron-winstaller": "^2.5.2"
   }
 }
