@@ -8,6 +8,14 @@
 const {app, BrowserWindow, globalShortcut, ipcMain, Tray, Menu} = require('electron');
 const path = require('path');
 const url = require('url');
+var AutoLaunch = require('auto-launch');
+ 
+var gitEasyAutoLauncher = new AutoLaunch({
+    name: 'Git Easy',
+    isHidden: true,
+});
+ 
+gitEasyAutoLauncher.enable();
 
 let isBrowsing = false;
 
