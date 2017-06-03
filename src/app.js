@@ -21,22 +21,21 @@ const appendDirectories = (directory) => {
         directoryList.removeChild(directoryList.lastChild);
     }
 
-    if(!directory) {
+    if (!directory) {
         return;
     }
+    const allSubDirectories = fs.readdirSync(directory);
+    const subDirectories = allSubDirectories.filter(file => {
+        const currentPath = path.join(directory, file);
+        return fs.lstatSync(currentPath).isDirectory() &&
+            fs.readdirSync(currentPath).indexOf(".git") > -1;
+    });
 
-    const subDirectories = fs.readdirSync(directory)
-        .filter(file => {
-            const currentPath = path.join(directory, file);
-            return fs.lstatSync(currentPath).isDirectory() &&
-                fs.readdirSync(currentPath).indexOf(".git") > -1;
-        });
-
-    subDirectories.forEach(subDirectory => {
+    const addSubDirectoryButton = (name, directory) => {
         var button = document.createElement('button');
-        button.innerHTML = subDirectory;
+        button.innerHTML = name;
         button.className = 'directoryButton';
-        button.setAttribute('data-path', `${directory}/${subDirectory}`);
+        button.setAttribute('data-path', directory);
 
         button.addEventListener("click", (e) => { 
             var list = document.getElementById("consoleList");
@@ -46,6 +45,17 @@ const appendDirectories = (directory) => {
         });
 
         directoryList.appendChild(button);
+    }
+
+    if (allSubDirectories.indexOf(".git") > -1) {
+        const index = /^win/.test(process.platform) ? directory.lastIndexOf('\\') : directory.lastIndexOf('/');
+        addSubDirectoryButton(
+            directory.substr(index > -1 ? (index + 1) : 0),
+            directory);
+    }
+
+    subDirectories.forEach(subDirectory => {
+        addSubDirectoryButton(subDirectory, `${directory}/${subDirectory}`);
     });
 };
 
