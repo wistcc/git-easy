@@ -1,11 +1,19 @@
  //handle setupevents as quickly as possible
- const setupEvents = require('./installers/setupEvents')
+ const setupEvents = require('./src/installers/setupEvents')
  if (setupEvents.handleSquirrelEvent()) {
     // squirrel event handled and app will exit in 1000ms, so don't do anything else
     return;
  }
  
-const {app, BrowserWindow, globalShortcut, ipcMain, Tray, Menu} = require('electron');
+const {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  Tray,
+  Menu
+} = require('electron');
+
 const path = require('path');
 const url = require('url');
 var AutoLaunch = require('auto-launch');
@@ -26,7 +34,13 @@ let tray = null;
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 350, height: 450, show: false, skipTaskbar: true, frame: false})
+  mainWindow = new BrowserWindow({
+    width: 350,
+    height: 450,
+    show: false,
+    skipTaskbar: true,
+    frame: false
+  });
   
   mainWindow.setMenu(null);
 

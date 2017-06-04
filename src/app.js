@@ -3,9 +3,9 @@ const {ipcRenderer} = require('electron');
 const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const storage = require('./src/storage');
-const command = require('./src/command');
-const consoles = require('./src/consoles');
+const storage = require('./src/core/storage');
+const command = require('./src/core/command');
+const consoles = require('./src/core/consoles');
 
 var browseButton = document.getElementById('browseButton');
 var removeButton = document.getElementById('removeButton');
