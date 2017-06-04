@@ -16,3 +16,5 @@ combination and click the repo to open it. Things you can do:
 - Add Git repository folders.
 - Remove saved folder.
 - Open Git repository folder with the selected console.
+
+![photo_2017-06-04_04-25-51](https://cloud.githubusercontent.com/assets/6082977/26760096/08ff35bc-48de-11e7-8bf5-d3be5063251c.jpg)
