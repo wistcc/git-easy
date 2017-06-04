@@ -7,6 +7,7 @@ const command = require('../core/command');
 const consoles = require('../core/consoles');
 
 const lastDirectory = storage.getLastDirectory() || storage.getDirectories()[0];
+let currentSubDirectories = [];
 
 var savedDirectories = document.getElementById('savedDirectories');
 var consoleList = document.getElementById('consoleList');
@@ -50,6 +51,16 @@ const init = () => {
             appendSavedDirectories();
         }
     });
+
+    document.querySelector('html').addEventListener("keyup",function(e) {
+        const key = Number(e.key);
+        if (key >= 0) {
+        console.log(currentSubDirectories[key])
+            var list = document.getElementById("consoleList");
+            var con = list.options[list.selectedIndex].value;
+            command.exec(currentSubDirectories[key], con);
+        }
+    });
 };
 
 const appendDirectories = (directory = lastDirectory) => {
@@ -62,6 +73,7 @@ const appendDirectories = (directory = lastDirectory) => {
     if (!directory) {
         return;
     }
+
     const allSubDirectories = fs.readdirSync(directory);
     const subDirectories = allSubDirectories.filter(file => {
         const currentPath = path.join(directory, file);
@@ -69,15 +81,23 @@ const appendDirectories = (directory = lastDirectory) => {
             fs.readdirSync(currentPath).indexOf(".git") > -1;
     });
 
+    let index = 0;
+
     const addSubDirectoryButton = (name, directory) => {
-        var button = document.createElement('button');
-        button.innerHTML = name;
+        const button = document.createElement('button');
+        const innerHTML = index < 10 ? `${index}- ${name}` : name;
+
+        if(index < 10){
+            index++;
+        }
+
+        button.innerHTML = innerHTML;
         button.className = 'directoryButton';
         button.setAttribute('data-path', directory);
 
         button.addEventListener("click", (e) => { 
-            var list = document.getElementById("consoleList");
-            var con = list.options[list.selectedIndex].value;
+            const list = document.getElementById("consoleList");
+            const con = list.options[list.selectedIndex].value;
 
             command.exec(e.srcElement.getAttribute('data-path'), con);
         });
@@ -86,6 +106,8 @@ const appendDirectories = (directory = lastDirectory) => {
     }
 
     if (allSubDirectories.indexOf(".git") > -1) {
+        currentSubDirectories.push(directory);
+
         const index = /^win/.test(process.platform) ? directory.lastIndexOf('\\') : directory.lastIndexOf('/');
         addSubDirectoryButton(
             directory.substr(index > -1 ? (index + 1) : 0),
@@ -93,7 +115,9 @@ const appendDirectories = (directory = lastDirectory) => {
     }
 
     subDirectories.forEach(subDirectory => {
-        addSubDirectoryButton(subDirectory, `${directory}/${subDirectory}`);
+        const currentPath = `${directory}/${subDirectory}`;
+        currentSubDirectories.push(currentPath);
+        addSubDirectoryButton(subDirectory, currentPath);
     });
 };
 
