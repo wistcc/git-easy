@@ -1,13 +1,13 @@
-var { app } = require('electron').remote;
-var fs = require('fs');
-var path = require('path');
+const { app } = require('electron').remote;
+const fs = require('fs');
+const path = require('path');
 const directoriesKey = 'directories';
 const lastDirectoryKey = 'lastDirectory';
 const lastConsoleKey = 'lastConsole';
-var data = null;
-var dataFilePath = path.join(app.getPath('userData'), 'data.json'); 
+const dataFilePath = path.join(app.getPath('userData'), 'data.json');
+let data = null;
 
-function load() {
+const load = () => {
     if (data !== null) {
         return;
     } 
@@ -23,17 +23,17 @@ function load() {
     data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8')); 
 }
 
-function save() {
+const save = () => {
     fs.writeFileSync(dataFilePath, JSON.stringify(data)); 
 }
 
-exports.setLastConsole = function (value) {
+exports.setLastConsole = value => {
     load();
     data[lastConsoleKey] = value;
     save();
 }
 
-exports.getLastConsole = function () { 
+exports.getLastConsole = () => { 
     load();
     var value = null;
 
@@ -44,13 +44,13 @@ exports.getLastConsole = function () {
     return value;
 }
 
-exports.setLastDirectory = function (value) {
+exports.setLastDirectory = value => {
     load();
     data[lastDirectoryKey] = value;
     save();
 }
 
-exports.getLastDirectory = function () { 
+exports.getLastDirectory = () => { 
     load();
     var value = null;
 
@@ -61,7 +61,7 @@ exports.getLastDirectory = function () {
     return value;
 }
 
-exports.setDirectories = function (value) {
+exports.setDirectories = value => {
     load();
     if(!data[directoriesKey].includes(value)) {
         data[directoriesKey].push(value);
@@ -69,7 +69,7 @@ exports.setDirectories = function (value) {
     save();
 }
 
-exports.getDirectories = function () { 
+exports.getDirectories = () => { 
     load();
     var value = [];
 
@@ -80,7 +80,7 @@ exports.getDirectories = function () {
     return value;
 }
 
-exports.deleteDirectory = function (index) { 
+exports.deleteDirectory = index => { 
     load();
     if (directoriesKey in data) {
         data[directoriesKey].splice(index, 1);

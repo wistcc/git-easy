@@ -12,13 +12,22 @@ const consoles = {
             command: 'gnome-terminal',
         },
     },
+    mac: {
+        'Terminal': {
+            command: 'open -a Terminal /',
+        },
+    },
 };
 
 exports.get = () => {
-    if(/^win/.test(process.platform)) {
-        return consoles['win'];
+    const platform = process.platform;
+    if(/^win/.test(platform)) {
+        return consoles.win;
     }
-    if(/^linux/.test(process.platform)) {
-        return consoles['linux'];
+    if(/^linux/.test(platform)) {
+        return consoles.linux;
+    }
+    if(/^darwin/.test(platform)) {
+        return consoles.mac;
     }
 }
