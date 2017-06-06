@@ -52,15 +52,14 @@ const init = () => {
         }
     });
 
-    document.querySelector('html').addEventListener("keyup",function(e) {
+    document.onkeyup = function(e) {
         const key = Number(e.key);
         if (key >= 0) {
-        console.log(currentSubDirectories[key])
             var list = document.getElementById("consoleList");
             var con = list.options[list.selectedIndex].value;
             command.exec(currentSubDirectories[key], con);
         }
-    });
+    };
 };
 
 const appendDirectories = (directory = lastDirectory) => {
