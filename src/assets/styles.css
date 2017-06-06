@@ -1,5 +1,6 @@
 body {
     background-color: #5e42a6;
+    overflow-y: hidden;
 }
 
 .header {
@@ -17,27 +18,32 @@ body {
     bottom: 0px;
     left: 0px;
     width: 100%;
-    height: 3em;
+    height: 50px;
 }
 
 .content {
-    -webkit-app-region: drag;
     margin-top: 10px;
     position: absolute;
     top: 80px;
 }
 
+#directoryList {
+    overflow-y: auto;
+    width: 100%;
+    height: 300px;
+}
+
 #consoleList {
-    width: 315px;
+    width: 100%;
     height: 30px;
     font-size: 18px;
     line-height: 1.3333333;
     border-radius: 6px;
     padding-left: 10px;
-    margin: 5px 0px 0px 10px;
+    margin-top: 5px;
 }
 
-#browseButton, #removeButton {
+#removeButton {
     -webkit-appearance: none;
     -ms-appearance: none;
     appearance: none;
@@ -51,33 +57,30 @@ body {
     color: #ffffff;
     cursor: pointer;
     display: inline-block;
-    font-size: 0.8em;
+    font-size: 12px;
     font-weight: 600;
-    height: 3.5em;
-    letter-spacing: 0.25em;
-    line-height: 3.5em;
-    padding: 0 1.75em;
+    height: 56px;
+    letter-spacing: 4px;
+    line-height: 56px;
+    padding: 0 28px;
     text-align: center;
     text-decoration: none;
     text-transform: uppercase;
     white-space: nowrap;
 }
 
-#browseButton {
-    width: 50%;
-}
-
 #removeButton {
     width: 100%;
 }
 
-#savedDirectories{
-    width: 45%;
+#savedDirectories {
+    width: 100%;
     height: 30px;
     font-size: 18px;
     line-height: 1.3333333;
     border-radius: 6px;
     padding-left: 10px;
+    margin-top: 5px;
 }
 
 #browseButton:hover, #removeButton:hover {
@@ -87,7 +90,6 @@ body {
 }
 
 .directoryButton {
-    -webkit-app-region: no-drag;
 	-moz-appearance: none;
 	-webkit-appearance: none;
 	-ms-appearance: none;
@@ -97,19 +99,18 @@ body {
 	-ms-transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
 	transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
 	background-color: transparent;
-	border-radius: 0.25em;
+	border-radius: 4px;
     border: none;
     border: solid 1px rgba(255, 255, 255, 0.15);
 	color: #ffffff !important;
 	cursor: pointer;
-	display: inline-block;
-	font-size: 0.9em;
+	font-size: 14px;
 	font-weight: 300;
-	height: 3.05556em;
-	letter-spacing: 0.1em;
-	line-height: 3.05556em;
-	padding: 0 2.5em;
-	text-align: center;
+    width: 100%;
+	height: 49px;
+	letter-spacing: 2px;
+	line-height: 49px;
+	padding: 0 40px;
 	text-decoration: none;
 	text-transform: uppercase;
 	white-space: nowrap;
@@ -122,7 +123,27 @@ body {
 	color: #34a58e !important;
 }
 
-.directoryButton:hover:active {
-	background-color: rgba(52, 165, 142, 0.15);
-	color: #34a58e !important;
+#browseButton {
+	background-color: #DB3A0D;
+	height: 60px;
+	display: block;
+	width: 60px;
+	color: white;
+	text-decoration: none;
+	text-transform: uppercase;
+	font-family: Helvetica;
+	font-weight: 700;
+	font-size: 30px;
+	border-radius: 100%;
+	border: 1px solid #DB3A0D;
+    position: fixed;
+    bottom: 60px;
+    right: 10px;
+    z-index: 999;
+}
+
+#browseButton:hover {
+	box-shadow: 0px 0px 4px #b1b1b1;
+	background: linear-gradient(0deg, #CC360C, #DB3A0D);
+	border: 1px solid #B3320E;
 }

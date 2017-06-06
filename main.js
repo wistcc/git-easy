@@ -36,7 +36,8 @@ const createWindow = () => {
     height: 450,
     show: false,
     skipTaskbar: true,
-    frame: false
+    frame: false,
+    resizable: false,
   });
   
   mainWindow.setMenu(null);
