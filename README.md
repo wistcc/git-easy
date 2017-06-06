@@ -17,4 +17,4 @@ combination and click the repo to open it. Things you can do:
 - Remove saved folder.
 - Open Git repository folder with the selected console.
 
-![photo_2017-06-04_04-25-51](https://cloud.githubusercontent.com/assets/6082977/26760096/08ff35bc-48de-11e7-8bf5-d3be5063251c.jpg)
+![untitled](https://cloud.githubusercontent.com/assets/4671080/26811149/006410ce-4a3e-11e7-9e25-dfe1b177bf84.png)
