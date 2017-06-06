@@ -59,6 +59,11 @@ const init = () => {
             var con = list.options[list.selectedIndex].value;
             command.exec(currentSubDirectories[key], con);
         }
+
+        //Esc was pressed
+        if(e.keyCode === 27) {
+            ipcRenderer.send('hide-main-window');
+        }
     };
 };
 

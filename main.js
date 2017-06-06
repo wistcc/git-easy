@@ -119,3 +119,7 @@ app.on('activate', () => {
 ipcMain.on('mark-as-browsing', () => {
   isBrowsing = true;
 });
+
+ipcMain.on('hide-main-window', () => {
+  mainWindow.hide();
+});
