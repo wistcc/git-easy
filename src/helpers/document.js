@@ -1,5 +1,6 @@
 const { dialog } = require('electron').remote;
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
+const { version } = require('../../package.json');
 const fs = require('fs');
 const path = require('path');
 const storage = require('./storage');
@@ -11,6 +12,7 @@ let currentSubDirectories = [];
 
 var savedDirectories = document.getElementById('savedDirectories');
 var consoleList = document.getElementById('consoleList');
+var updateAvailable = document.getElementById('updateAvailable');
 
 const init = () => {
     var removeButton = document.getElementById('removeButton');
@@ -50,6 +52,10 @@ const init = () => {
             storage.setLastDirectory(paths[0]);
             appendSavedDirectories();
         }
+    });
+
+    updateAvailable.addEventListener("click", () => {
+        shell.openExternal('https://github.com/wistcc/git-easy/releases');
     });
 
     document.onkeyup = function(e) {
@@ -162,9 +168,21 @@ const appendConsoles = () => {
     }
 };
 
+const checkForUpdates = () => {
+  fetch('https://api.github.com/repos/wistcc/git-easy/tags')
+    .then(response => { return response.json(); })
+    .then(data => {
+        //TODO: get the correct version number and compare which is greater. Semver compare.
+        if (!data[0].name.includes(version)) {
+            updateAvailable.classList.remove('hidden');
+        }
+  });
+};
+
 module.exports = {
     init,
     appendConsoles,
     appendSavedDirectories,
     appendDirectories,
+    checkForUpdates,
 }

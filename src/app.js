@@ -4,3 +4,4 @@ documentHelper.init();
 documentHelper.appendConsoles();
 documentHelper.appendSavedDirectories();
 documentHelper.appendDirectories();
+documentHelper.checkForUpdates();
