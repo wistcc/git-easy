@@ -14,11 +14,11 @@ function getInstallerConfig () {
     const outPath = path.join(rootPath, 'release-builds');
 
     return Promise.resolve({
-       appDirectory: path.join(outPath, 'Git\ Easy-win32-ia32/'),
+       appDirectory: path.join(outPath, 'git-easy-win32-ia32/'),
        authors: 'Winner Crespo',
        noMsi: true,
        outputDirectory: path.join(outPath, 'windows-installer'),
-       exe: 'Git Easy.exe',
-       setupExe: 'GitEasy.exe',
+       exe: 'git-easy.exe',
+       setupExe: 'git-easy.exe',
    });
 };

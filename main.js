@@ -17,7 +17,7 @@ if (setupEvents.handleSquirrelEvent()) {
 }
  
 const gitEasyAutoLauncher = new AutoLaunch({
-    name: 'Git Easy',
+    name: 'git-easy',
     isHidden: true,
 });
  
