@@ -55,7 +55,7 @@ const createWindow = () => {
 
   mainWindow.on('blur', function() {
     if(!isBrowsing) {
-      mainWindow.hide();
+      hideWindow();
     }
     isBrowsing = false;
   });
@@ -122,5 +122,10 @@ ipcMain.on('mark-as-browsing', () => {
 });
 
 ipcMain.on('hide-main-window', () => {
-  mainWindow.hide();
+  hideWindow();
 });
+
+function hideWindow() {
+  mainWindow.hide();
+  mainWindow.webContents.send('clear-filter');  
+}

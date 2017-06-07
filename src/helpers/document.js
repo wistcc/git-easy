@@ -12,6 +12,8 @@ let currentSubDirectories = [];
 var savedDirectories = document.getElementById('savedDirectories');
 var consoleList = document.getElementById('consoleList');
 
+let dirFilter = '';
+
 const init = () => {
     var removeButton = document.getElementById('removeButton');
     var browseButton = document.getElementById('browseButton');
@@ -63,6 +65,18 @@ const init = () => {
         //Esc was pressed
         if(e.keyCode === 27) {
             ipcRenderer.send('hide-main-window');
+        }
+
+        //Backspace was pressed
+        if(e.keyCode === 8) {
+            dirFilter = dirFilter.slice(0, -1);
+            document.getElementById('filter').innerHTML = dirFilter;            
+        }
+
+        if(/[a-z]/i.test(String.fromCharCode(e.keyCode)))
+        {
+            dirFilter += String.fromCharCode(e.keyCode);
+            document.getElementById('filter').innerHTML = dirFilter;
         }
     };
 };
@@ -161,6 +175,11 @@ const appendConsoles = () => {
         consoleList.appendChild(option);
     }
 };
+
+// When main-window is hidden, reset filter
+ipcRenderer.on('clear-filter', () => {
+    dirFilter = '';
+});
 
 module.exports = {
     init,
