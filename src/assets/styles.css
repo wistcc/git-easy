@@ -148,3 +148,12 @@ body {
 	background: linear-gradient(0deg, #CC360C, #DB3A0D);
 	border: 1px solid #B3320E;
 }
+
+.filter {
+    text-align: center;
+    display: block;
+    font-family: Helvetica;
+	font-size: 14px;
+	color: white;
+	text-transform: uppercase;
+}
