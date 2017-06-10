@@ -7,16 +7,16 @@ const command = require('../core/command');
 const consoles = require('../core/consoles');
 
 const lastDirectory = storage.getLastDirectory() || storage.getDirectories()[0];
-let currentSubDirectories = [];
+let subdirectories = [];
 
-var savedDirectories = document.getElementById('savedDirectories');
-var consoleList = document.getElementById('consoleList');
+const savedDirectories = document.getElementById('savedDirectories');
+const consoleList = document.getElementById('consoleList');
 
 let dirFilter = '';
 
 const init = () => {
-    var removeButton = document.getElementById('removeButton');
-    var browseButton = document.getElementById('browseButton');
+    const removeButton = document.getElementById('removeButton');
+    const browseButton = document.getElementById('browseButton');
 
     consoleList.addEventListener('change', (e) => {
         const list = e.srcElement;
@@ -46,7 +46,7 @@ const init = () => {
             properties: ['openDirectory']
         });
 
-        if(paths) {
+        if (paths) {
             storage.setDirectories(paths[0]);
             appendDirectories(paths[0]);
             storage.setLastDirectory(paths[0]);
@@ -54,7 +54,7 @@ const init = () => {
         }
     });
 
-    document.onkeyup = function(e) {
+    document.onkeyup = function (e) {
         const key = Number(e.key);
         if (key >= 0) {
             var list = document.getElementById("consoleList");
@@ -63,18 +63,18 @@ const init = () => {
         }
 
         //Esc was pressed
-        if(e.keyCode === 27) {
+        if (e.keyCode === 27) {
             ipcRenderer.send('hide-main-window');
         }
 
         //Backspace was pressed
-        if(e.keyCode === 8) {
+        if (e.keyCode === 8) {
             dirFilter = dirFilter.slice(0, -1);
-            document.getElementById('filter').innerHTML = dirFilter;            
+            document.getElementById('filter').innerHTML = dirFilter;
         }
 
-        if(/[a-z]/i.test(String.fromCharCode(e.keyCode)))
-        {
+        // Any a-z letter was pressed
+        if (/[a-z]/i.test(String.fromCharCode(e.keyCode))) {
             dirFilter += String.fromCharCode(e.keyCode);
             document.getElementById('filter').innerHTML = dirFilter;
         }
@@ -82,76 +82,70 @@ const init = () => {
 };
 
 const appendDirectories = (directory = lastDirectory) => {
-    var directoryList = document.getElementById('directoryList');
-
-    while (directoryList.hasChildNodes()) {
-        directoryList.removeChild(directoryList.lastChild);
-    }
-
     if (!directory) {
         return;
     }
 
     const allSubDirectories = fs.readdirSync(directory);
-    const subDirectories = allSubDirectories.filter(file => {
+    const currentSubDirectories = allSubDirectories.filter(file => {
         const currentPath = path.join(directory, file);
         return fs.lstatSync(currentPath).isDirectory() &&
-            fs.readdirSync(currentPath).indexOf(".git") > -1;
+            fs.readdirSync(currentPath).includes(".git");
     });
 
-    let index = 0;
-
-    const addSubDirectoryButton = (name, directory) => {
-        const button = document.createElement('button');
-        const innerHTML = index < 10 ? `${index}- ${name}` : name;
-
-        if(index < 10){
-            index++;
-        }
-
-        button.innerHTML = innerHTML;
-        button.className = 'directoryButton';
-        button.setAttribute('data-path', directory);
-
-        button.addEventListener("click", (e) => { 
-            const list = document.getElementById("consoleList");
-            const con = list.options[list.selectedIndex].value;
-
-            command.exec(e.srcElement.getAttribute('data-path'), con);
-        });
-
-        directoryList.appendChild(button);
-    }
-
-    if (allSubDirectories.indexOf(".git") > -1) {
+    if(allSubDirectories.includes(".git"))
         currentSubDirectories.push(directory);
 
-        const index = /^win/.test(process.platform) ? directory.lastIndexOf('\\') : directory.lastIndexOf('/');
-        addSubDirectoryButton(
-            directory.substr(index > -1 ? (index + 1) : 0),
-            directory);
-    }
-
-    subDirectories.forEach(subDirectory => {
-        const currentPath = `${directory}/${subDirectory}`;
-        currentSubDirectories.push(currentPath);
-        addSubDirectoryButton(subDirectory, currentPath);
-    });
+    subdirectories = currentSubDirectories.map(s => ({
+        root: directory,
+        folder: s,
+    }));
 };
+
+const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
+    const button = document.createElement('button');
+    const innerHTML = buttonIndex ? `${buttonIndex}- ${name}` : name;
+
+    button.innerHTML = innerHTML;
+    button.className = 'directoryButton';
+    button.setAttribute('data-path', directory);
+
+    button.addEventListener("click", (e) => {
+        const list = document.getElementById("consoleList");
+        const con = list.options[list.selectedIndex].value;
+
+        command.exec(e.srcElement.getAttribute('data-path'), con);
+    });
+
+    rootElement.appendChild(button);
+};
+
+const printSubdirectories = () => {
+    const directoryList = document.getElementById('directoryList');
+
+    while (directoryList.hasChildNodes()) {
+        directoryList.removeChild(directoryList.lastChild);
+    }
+    
+    subdirectories.forEach((s, i) => {
+        const currentPath = `${s.root}/${s.folder}`;
+        addSubDirectoryButton(directoryList, s.folder, currentPath, i < 10 ? i : null);
+    });
+}
 
 const appendSavedDirectories = () => {
     while (savedDirectories.hasChildNodes()) {
         savedDirectories.removeChild(savedDirectories.lastChild);
     }
-    
-    var directories = storage.getDirectories();
+
+    const directories = storage.getDirectories();
     const last = storage.getLastDirectory();
     directories.forEach(directory => {
-        var option = document.createElement('option');
+        const option = document.createElement('option');
         option.value = directory;
         option.innerHTML = directory;
-        
-        if(last && last === directory) {
+
+        if (last && last === directory) {
             option.selected = true;
         }
 
@@ -163,12 +157,12 @@ const appendConsoles = () => {
     const defaultConsoles = consoles.get();
     const lastConsole = storage.getLastConsole();
 
-    for(con in defaultConsoles){
+    for (con in defaultConsoles) {
         var option = document.createElement('option');
         option.value = con;
         option.innerHTML = con;
 
-        if(lastConsole && lastConsole === con) {
+        if (lastConsole && lastConsole === con) {
             option.selected = true;
         }
 
@@ -186,4 +180,5 @@ module.exports = {
     appendConsoles,
     appendSavedDirectories,
     appendDirectories,
+    printSubdirectories,
 }

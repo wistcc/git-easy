@@ -149,7 +149,7 @@ body {
 	border: 1px solid #B3320E;
 }
 
-.filter {
+#filter {
     text-align: center;
     display: block;
     font-family: Helvetica;
