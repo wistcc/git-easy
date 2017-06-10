@@ -109,7 +109,7 @@ const appendDirectories = (directory = lastDirectory) => {
 
 const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     const button = document.createElement('button');
-    const innerHTML = buttonIndex ? `${buttonIndex}- ${name}` : name;
+    const innerHTML = buttonIndex >= 0 ? `${buttonIndex}- ${name}` : name;
 
     button.innerHTML = innerHTML;
     button.className = 'directoryButton';
@@ -138,7 +138,7 @@ const printSubdirectories = () => {
     .filter(s => filterRegex.test(s.folder))
     .forEach((s, i) => {
         const currentPath = `${s.root}/${s.folder}`;
-        addSubDirectoryButton(directoryList, s.folder, currentPath, i < 10 ? i : null);
+        addSubDirectoryButton(directoryList, s.folder, currentPath, i < 10 ? i : -1);
     });
 }
 
