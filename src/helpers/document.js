@@ -29,6 +29,7 @@ const init = () => {
         const option = list.options[list.selectedIndex].value;
         storage.setLastDirectory(option);
         appendDirectories(option);
+        printSubdirectories();
     });
 
     removeButton.addEventListener("click", () => {
@@ -38,6 +39,7 @@ const init = () => {
         appendDirectories(currentDirectory);
         storage.setLastDirectory(currentDirectory);
         appendSavedDirectories();
+        printSubdirectories();
     });
 
     browseButton.addEventListener("click", () => {
@@ -51,6 +53,7 @@ const init = () => {
             appendDirectories(paths[0]);
             storage.setLastDirectory(paths[0]);
             appendSavedDirectories();
+            printSubdirectories();
         }
     });
 
@@ -59,7 +62,7 @@ const init = () => {
         if (key >= 0) {
             var list = document.getElementById("consoleList");
             var con = list.options[list.selectedIndex].value;
-            command.exec(currentSubDirectories[key], con);
+            command.exec(path.join(subdirectories[key].root, subdirectories[key].folder), con);
         }
 
         //Esc was pressed
@@ -71,12 +74,14 @@ const init = () => {
         if (e.keyCode === 8) {
             dirFilter = dirFilter.slice(0, -1);
             document.getElementById('filter').innerHTML = dirFilter;
+            printSubdirectories();
         }
 
         // Any a-z letter was pressed
-        if (/[a-z]/i.test(String.fromCharCode(e.keyCode))) {
-            dirFilter += String.fromCharCode(e.keyCode);
+        if (/^[A-Z]$/i.test(e.key)) {
+            dirFilter += e.key;
             document.getElementById('filter').innerHTML = dirFilter;
+            printSubdirectories();
         }
     };
 };
@@ -93,7 +98,7 @@ const appendDirectories = (directory = lastDirectory) => {
             fs.readdirSync(currentPath).includes(".git");
     });
 
-    if(allSubDirectories.includes(".git"))
+    if (allSubDirectories.includes(".git"))
         currentSubDirectories.push(directory);
 
     subdirectories = currentSubDirectories.map(s => ({
@@ -126,8 +131,12 @@ const printSubdirectories = () => {
     while (directoryList.hasChildNodes()) {
         directoryList.removeChild(directoryList.lastChild);
     }
-    
-    subdirectories.forEach((s, i) => {
+
+    const filterRegex = new RegExp(dirFilter, 'i');
+
+    subdirectories
+    .filter(s => filterRegex.test(s.folder))
+    .forEach((s, i) => {
         const currentPath = `${s.root}/${s.folder}`;
         addSubDirectoryButton(directoryList, s.folder, currentPath, i < 10 ? i : null);
     });
