@@ -9,8 +9,9 @@ const consoles = require('../core/consoles');
 const lastDirectory = storage.getLastDirectory() || storage.getDirectories()[0];
 let subdirectories = [];
 
-const savedDirectories = document.getElementById('savedDirectories');
-const consoleList = document.getElementById('consoleList');
+const $savedDirectories = document.getElementById('savedDirectories');
+const $consoleList = document.getElementById('consoleList');
+const $filter = document.getElementById('filter');
 
 let dirFilter = '';
 
@@ -18,13 +19,13 @@ const init = () => {
     const removeButton = document.getElementById('removeButton');
     const browseButton = document.getElementById('browseButton');
 
-    consoleList.addEventListener('change', (e) => {
+    $consoleList.addEventListener('change', (e) => {
         const list = e.srcElement;
         const option = list.options[list.selectedIndex].value;
         storage.setLastConsole(option);
     });
 
-    savedDirectories.addEventListener('change', (e) => {
+    $savedDirectories.addEventListener('change', (e) => {
         const list = e.srcElement;
         const option = list.options[list.selectedIndex].value;
         storage.setLastDirectory(option);
@@ -33,8 +34,7 @@ const init = () => {
     });
 
     removeButton.addEventListener("click", () => {
-        storage.deleteDirectory(savedDirectories.selectedIndex);
-
+        storage.deleteDirectory($savedDirectories.selectedIndex);
         const currentDirectory = storage.getDirectories()[0];
         appendDirectories(currentDirectory);
         storage.setLastDirectory(currentDirectory);
@@ -60,9 +60,9 @@ const init = () => {
     document.onkeyup = function (e) {
         const key = Number(e.key);
         if (key >= 0) {
-            var list = document.getElementById("consoleList");
-            var con = list.options[list.selectedIndex].value;
-            command.exec(path.join(subdirectories[key].root, subdirectories[key].folder), con);
+            const con = $consoleList.options[$consoleList.selectedIndex].value;
+            const sub = getFilteredSubdirectories(subdirectories, dirFilter)[key];
+            command.exec(path.join(sub.root, sub.folder), con);
         }
 
         //Esc was pressed
@@ -73,14 +73,14 @@ const init = () => {
         //Backspace was pressed
         if (e.keyCode === 8) {
             dirFilter = dirFilter.slice(0, -1);
-            document.getElementById('filter').innerHTML = dirFilter;
+            $filter.innerHTML = dirFilter;
             printSubdirectories();
         }
 
         // Any a-z letter was pressed
         if (/^[A-Z]$/i.test(e.key)) {
             dirFilter += e.key;
-            document.getElementById('filter').innerHTML = dirFilter;
+            $filter.innerHTML = dirFilter;
             printSubdirectories();
         }
     };
@@ -116,8 +116,7 @@ const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     button.setAttribute('data-path', directory);
 
     button.addEventListener("click", (e) => {
-        const list = document.getElementById("consoleList");
-        const con = list.options[list.selectedIndex].value;
+        const con = $consoleList.options[list.selectedIndex].value;
 
         command.exec(e.srcElement.getAttribute('data-path'), con);
     });
@@ -132,19 +131,17 @@ const printSubdirectories = () => {
         directoryList.removeChild(directoryList.lastChild);
     }
 
-    const filterRegex = new RegExp(dirFilter, 'i');
 
-    subdirectories
-    .filter(s => filterRegex.test(s.folder))
-    .forEach((s, i) => {
-        const currentPath = `${s.root}/${s.folder}`;
-        addSubDirectoryButton(directoryList, s.folder, currentPath, i < 10 ? i : -1);
-    });
+    getFilteredSubdirectories(subdirectories, dirFilter)
+        .forEach((s, i) => {
+            const currentPath = `${s.root}/${s.folder}`;
+            addSubDirectoryButton(directoryList, s.folder, currentPath, i < 10 ? i : -1);
+        });
 }
 
 const appendSavedDirectories = () => {
-    while (savedDirectories.hasChildNodes()) {
-        savedDirectories.removeChild(savedDirectories.lastChild);
+    while ($savedDirectories.hasChildNodes()) {
+        $savedDirectories.removeChild(savedDirectories.lastChild);
     }
 
     const directories = storage.getDirectories();
@@ -158,7 +155,7 @@ const appendSavedDirectories = () => {
             option.selected = true;
         }
 
-        savedDirectories.appendChild(option);
+        $savedDirectories.appendChild(option);
     });
 };
 
@@ -179,9 +176,16 @@ const appendConsoles = () => {
     }
 };
 
+const getFilteredSubdirectories = (sub, filter) => {
+    const regx = new RegExp(filter, 'i');
+    return sub.filter(s => regx.test(s.folder));
+}
+
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
     dirFilter = '';
+    $filter.innerHTML = dirFilter;
+    printSubdirectories();
 });
 
 module.exports = {
