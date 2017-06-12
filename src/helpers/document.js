@@ -6,40 +6,52 @@ const storage = require('./storage');
 const command = require('../core/command');
 const consoles = require('../core/consoles');
 
-const lastDirectory = storage.getLastDirectory() || storage.getDirectories()[0];
-let subdirectories = [];
-
 const $savedDirectories = document.getElementById('savedDirectories');
 const $consoleList = document.getElementById('consoleList');
 const $filter = document.getElementById('filter');
 
-let dirFilter = '';
+let store = {};
 
-const init = () => {
+const init = (localStore) => {
     const removeButton = document.getElementById('removeButton');
     const browseButton = document.getElementById('browseButton');
+
+    store = localStore;
+
+    const { lastDirectory, directories } = store.getState();
+
+    store.on('stateChanged', (newState, oldState) => {
+        if(newState.directoryFilter !== oldState.directoryFilter){
+            $filter.innerHTML = newState.directoryFilter;
+            printSubdirectories();
+        }
+
+        if(newState.subdirectories !== oldState.subdirectories)
+            documentHelper.printSubdirectories();
+    });
 
     $consoleList.addEventListener('change', (e) => {
         const list = e.srcElement;
         const option = list.options[list.selectedIndex].value;
         storage.setLastConsole(option);
+        store.setState({ lastConsole: option });
     });
 
     $savedDirectories.addEventListener('change', (e) => {
         const list = e.srcElement;
         const option = list.options[list.selectedIndex].value;
-        storage.setLastDirectory(option);
+        store.setState({ lastDirectory: option });        
         appendDirectories(option);
-        printSubdirectories();
     });
 
     removeButton.addEventListener("click", () => {
-        storage.deleteDirectory($savedDirectories.selectedIndex);
-        const currentDirectory = storage.getDirectories()[0];
-        appendDirectories(currentDirectory);
-        storage.setLastDirectory(currentDirectory);
+        let currentDirectories = directories.splice($savedDirectories.selectedIndex, 1);
+        store.setState({ 
+            lastDirectory: currentDirectories[0],
+            directories: currentDirectories,           
+        });                
+        appendDirectories(currentDirectories[0]);
         appendSavedDirectories();
-        printSubdirectories();
     });
 
     browseButton.addEventListener("click", () => {
@@ -49,19 +61,20 @@ const init = () => {
         });
 
         if (paths) {
-            storage.setDirectories(paths[0]);
+            store.setState({ directories: directories.push(paths[0]), lastDirectory: paths[0] });
             appendDirectories(paths[0]);
-            storage.setLastDirectory(paths[0]);
             appendSavedDirectories();
-            printSubdirectories();
         }
     });
 
     document.onkeyup = function (e) {
+        const { subdirectories } = store.getState();        
+        let { directoryFilter } = store.getState();        
+
         const key = Number(e.key);
         if (key >= 0) {
             const con = $consoleList.options[$consoleList.selectedIndex].value;
-            const sub = getFilteredSubdirectories(subdirectories, dirFilter)[key];
+            const sub = getFilteredSubdirectories(subdirectories, directoryFilter)[key];
             command.exec(path.join(sub.root, sub.folder), con);
         }
 
@@ -71,22 +84,18 @@ const init = () => {
         }
 
         //Backspace was pressed
-        if (e.keyCode === 8) {
-            dirFilter = dirFilter.slice(0, -1);
-            $filter.innerHTML = dirFilter;
-            printSubdirectories();
-        }
+        if (e.keyCode === 8)
+            store.setState({directoryFilter: directoryFilter.slice(0, -1)})
 
         // Any a-z letter was pressed
-        if (/^[A-Z]$/i.test(e.key)) {
-            dirFilter += e.key;
-            $filter.innerHTML = dirFilter;
-            printSubdirectories();
-        }
+        if (/^[A-Z]$/i.test(e.key))
+            store.setState({directoryFilter: directoryFilter += e.key});
     };
+
+    appendDirectories(lastDirectory);
 };
 
-const appendDirectories = (directory = lastDirectory) => {
+const appendDirectories = (directory) => {
     if (!directory) {
         return;
     }
@@ -101,10 +110,12 @@ const appendDirectories = (directory = lastDirectory) => {
     if (allSubDirectories.includes(".git"))
         currentSubDirectories.push(directory);
 
-    subdirectories = currentSubDirectories.map(s => ({
+    const subdirectories = currentSubDirectories.map(s => ({
         root: directory,
         folder: s,
     }));
+
+    store.setState({subdirectories})
 };
 
 const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
@@ -125,14 +136,14 @@ const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
 };
 
 const printSubdirectories = () => {
+    const { directoryFilter, subdirectories } = store.getState();
     const directoryList = document.getElementById('directoryList');
 
     while (directoryList.hasChildNodes()) {
         directoryList.removeChild(directoryList.lastChild);
     }
 
-
-    getFilteredSubdirectories(subdirectories, dirFilter)
+    getFilteredSubdirectories(subdirectories, directoryFilter)
         .forEach((s, i) => {
             const currentPath = `${s.root}/${s.folder}`;
             addSubDirectoryButton(directoryList, s.folder, currentPath, i < 10 ? i : -1);
@@ -144,14 +155,13 @@ const appendSavedDirectories = () => {
         $savedDirectories.removeChild(savedDirectories.lastChild);
     }
 
-    const directories = storage.getDirectories();
-    const last = storage.getLastDirectory();
+    const { directories, lastDirectory } = store.getState();
     directories.forEach(directory => {
         const option = document.createElement('option');
         option.value = directory;
         option.innerHTML = directory;
 
-        if (last && last === directory) {
+        if (lastDirectory && lastDirectory === directory) {
             option.selected = true;
         }
 
@@ -183,9 +193,7 @@ const getFilteredSubdirectories = (sub, filter) => {
 
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
-    dirFilter = '';
-    $filter.innerHTML = dirFilter;
-    printSubdirectories();
+    store.setState({directoryFilter: ''});
 });
 
 module.exports = {

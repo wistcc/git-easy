@@ -87,3 +87,8 @@ exports.deleteDirectory = index => {
         save();
     }
 }
+
+exports.getInitialState = () => {
+    load();
+    return data;
+}
