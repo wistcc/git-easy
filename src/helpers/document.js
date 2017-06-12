@@ -2,7 +2,6 @@ const { dialog } = require('electron').remote;
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const storage = require('./storage');
 const command = require('../core/command');
 const consoles = require('../core/consoles');
 
@@ -33,7 +32,6 @@ const init = (localStore) => {
     $consoleList.addEventListener('change', (e) => {
         const list = e.srcElement;
         const option = list.options[list.selectedIndex].value;
-        storage.setLastConsole(option);
         store.setState({ lastConsole: option });
     });
 
@@ -61,7 +59,7 @@ const init = (localStore) => {
         });
 
         if (paths) {
-            store.setState({ directories: directories.push(paths[0]), lastDirectory: paths[0] });
+            store.setState({ directories: directories.concat([paths[0]]), lastDirectory: paths[0] });
             appendDirectories(paths[0]);
             appendSavedDirectories();
         }
@@ -171,7 +169,7 @@ const appendSavedDirectories = () => {
 
 const appendConsoles = () => {
     const defaultConsoles = consoles.get();
-    const lastConsole = storage.getLastConsole();
+    const { lastConsole } = store.getState();    
 
     for (con in defaultConsoles) {
         var option = document.createElement('option');

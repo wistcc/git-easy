@@ -14,6 +14,9 @@ store.on('stateChanged', (newState, oldState) => {
 
     if(newState.lastDirectory !== oldState.lastDirectory)
         storage.setLastDirectory(newState.lastDirectory);
+    
+    if(newState.lastConsole !== oldState.lastConsole)
+        storage.setLastConsole(newState.lastConsole);
 });
 
 console.log('initial-state', store.getState());
