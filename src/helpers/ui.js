@@ -1,3 +1,5 @@
+const command = require('../core/command');
+
 exports.printSubdirectories = (subdirectories) => {
     const directoryList = document.getElementById('directoryList');
 
@@ -18,6 +20,8 @@ exports.printFilter = (filter) => {
 
 const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     const button = document.createElement('button');
+    const $consoleList = document.getElementById('consoleList');
+    
     const innerHTML = buttonIndex >= 0 ? `${buttonIndex}- ${name}` : name;
 
     button.innerHTML = innerHTML;
@@ -25,7 +29,7 @@ const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     button.setAttribute('data-path', directory);
 
     button.addEventListener("click", (e) => {
-        const con = $consoleList.options[list.selectedIndex].value;
+        const con = $consoleList.options[$consoleList.selectedIndex].value;
         command.exec(e.srcElement.getAttribute('data-path'), con);
     });
 
