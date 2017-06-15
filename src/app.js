@@ -1,25 +1,51 @@
 const documentHelper = require('./src/helpers/document');
 const Store = require('./src/core/store');
 const storage = require('./src/helpers/storage');
+const ui = require('./src/helpers/ui');
 
 const initialState = storage.getInitialState();
 initialState.directoryFilter = '';
 initialState.subdirectories = [];
+initialState.filteredSubdirectories = [];
+initialState.lastConsole = {};
 
 const store = new Store(initialState);
 
-store.on('stateChanged', (newState, oldState) => {
-    if(newState.directories !== oldState.directories)
-        storage.setDirectories(newState.directories);
-
-    if(newState.lastDirectory !== oldState.lastDirectory)
-        storage.setLastDirectory(newState.lastDirectory);
-    
+store.on('stateChanged', function(newState, oldState) {
     if(newState.lastConsole !== oldState.lastConsole)
         storage.setLastConsole(newState.lastConsole);
-});
 
-console.log('initial-state', store.getState());
+    if (newState.directoryFilter !== oldState.directoryFilter) {
+        const regx = new RegExp(newState.directoryFilter, 'i');
+        const filteredSubdirectories = newState.subdirectories.filter(s => regx.test(s.folder));
+        
+        this.setState({
+            filteredSubdirectories,
+        });
+        
+        ui.printFilter(newState.directoryFilter);
+    }
+
+    if (newState.subdirectories !== oldState.subdirectories) {
+        this.setState({
+            filteredSubdirectories: newState.subdirectories,
+            directoryFilter: '',
+        });
+    }
+
+    if (newState.directories !== oldState.directories) {
+        document.appendSavedDirectories();
+        storage.setDirectories(newState.directories);        
+    }
+
+    if (newState.lastDirectory !== oldState.lastDirectory) {
+        document.appendDirectories(newState.lastDirectory);
+        storage.setLastDirectory(newState.lastDirectory);
+    }
+
+    if (newState.filteredSubdirectories !== oldState.filteredSubdirectories)
+        ui.printSubdirectories(newState.filteredSubdirectories);
+});
 
 documentHelper.init(store);
 documentHelper.appendConsoles();
