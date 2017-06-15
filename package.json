@@ -25,7 +25,8 @@
     "electron": "~1.6.2",
     "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^8.7.0",
-    "electron-winstaller": "^2.5.2"
+    "electron-winstaller": "^2.5.2",
+    "cross-env": "^5.0.1"
   },
   "dependencies": {
     "auto-launch": "^5.0.1"
