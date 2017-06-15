@@ -4,10 +4,6 @@ const storage = require('./src/helpers/storage');
 const ui = require('./src/helpers/ui');
 
 const initialState = storage.getInitialState();
-initialState.directoryFilter = '';
-initialState.subdirectories = [];
-initialState.filteredSubdirectories = [];
-initialState.lastConsole = {};
 
 const store = new Store(initialState);
 
@@ -34,12 +30,12 @@ store.on('stateChanged', function(newState, oldState) {
     }
 
     if (newState.directories !== oldState.directories) {
-        document.appendSavedDirectories();
+        documentHelper.appendSavedDirectories();
         storage.setDirectories(newState.directories);        
     }
 
     if (newState.lastDirectory !== oldState.lastDirectory) {
-        document.appendDirectories(newState.lastDirectory);
+        documentHelper.appendDirectories(newState.lastDirectory);
         storage.setLastDirectory(newState.lastDirectory);
     }
 

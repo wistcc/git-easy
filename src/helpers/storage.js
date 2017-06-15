@@ -9,18 +9,24 @@ let data = null;
 
 const load = () => {
     if (data !== null) {
-        return;
+        return data;
     } 
 
     if (!fs.existsSync(dataFilePath)) {
-        data = {};
-        data[directoriesKey] = [];
-        data[lastDirectoryKey] = undefined;
-        data[lastConsoleKey] = undefined;
+        data = {
+            directories: [],
+            lastDirectory: '',
+            lastConsole: '',
+            directoryFilter: '',
+            subdirectories: [],
+            filteredSubdirectories: [],
+            lastConsole: {},
+        };
+        save();
         return;
     }
 
-    data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8')); 
+    data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8'));
 }
 
 const save = () => {

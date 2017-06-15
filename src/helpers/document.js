@@ -32,7 +32,7 @@ const init = (localStore) => {
     });
 
     $removeButton.addEventListener("click", (ev) => {
-        const { directories } = store.getstate();
+        const { directories } = store.getState();
         let currentDirectories = directories.splice($savedDirectories.selectedIndex, 1);
         store.setState({
             lastDirectory: currentDirectories[0],
