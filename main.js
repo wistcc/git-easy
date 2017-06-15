@@ -19,14 +19,11 @@ if (setupEvents.handleSquirrelEvent()) {
 const gitEasyAutoLauncher = new AutoLaunch({
     name: 'git-easy',
     isHidden: true,
-    mac: {
-        useLaunchAgent: true,
-    }
 });
 
 gitEasyAutoLauncher.isEnabled().then((enabled) => {
-    if (enabled) return;
-    return gitEasyAutoLauncher.enable()
+    if (enabled || process.env.NODE_ENV === 'dev') return;
+    return gitEasyAutoLauncher.enable();
 }).then((err) => {});
 
 // Keep a global reference of the window object, if you don't, the window will
