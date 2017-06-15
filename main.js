@@ -22,7 +22,7 @@ const gitEasyAutoLauncher = new AutoLaunch({
 });
 
 gitEasyAutoLauncher.isEnabled().then((enabled) => {
-    if (enabled || process.env.NODE_ENV === 'dev') return;
+    if (enabled || process.env.NODE_ENV === 'development') return;
     return gitEasyAutoLauncher.enable();
 }).then((err) => {});
 
