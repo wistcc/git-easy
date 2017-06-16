@@ -29,8 +29,6 @@ gitEasyAutoLauncher.isEnabled().then((enabled) => {
     return gitEasyAutoLauncher.enable();
 }).then((err) => {});
 
-app.dock.hide();
-
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow = null;
@@ -62,7 +60,7 @@ const createWindow = () => {
   });
 
   mainWindow.on('blur', function() {
-    if(!isBrowsing) {
+    if (!isBrowsing) {
       mainWindow.hide();
     }
     isBrowsing = false;
@@ -85,6 +83,11 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
+
+  if (/^darwin/.test(platform)) {
+    app.dock.hide()
+  }
+
   tray = new Tray(path.join(__dirname, '/src/assets/images/icon.png'));
   tray.setToolTip('Git Easy');
 

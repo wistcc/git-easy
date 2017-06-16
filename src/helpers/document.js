@@ -44,7 +44,7 @@ const init = () => {
             properties: ['openDirectory']
         });
 
-        if(paths) {
+        if (paths) {
             storage.setDirectories(paths[0]);
             appendDirectories(paths[0]);
             storage.setLastDirectory(paths[0]);
@@ -61,7 +61,7 @@ const init = () => {
         }
 
         //Esc was pressed
-        if(e.keyCode === 27) {
+        if (e.keyCode === 27) {
             ipcRenderer.send('hide-main-window');
         }
     };
@@ -91,7 +91,7 @@ const appendDirectories = (directory = lastDirectory) => {
         const button = document.createElement('button');
         const innerHTML = index < 10 ? `${index}- ${name}` : name;
 
-        if(index < 10){
+        if (index < 10){
             index++;
         }
 
@@ -137,7 +137,7 @@ const appendSavedDirectories = () => {
         option.value = directory;
         option.innerHTML = directory;
         
-        if(last && last === directory) {
+        if (last && last === directory) {
             option.selected = true;
         }
 
@@ -154,7 +154,7 @@ const appendConsoles = () => {
         option.value = con;
         option.innerHTML = con;
 
-        if(lastConsole && lastConsole === con) {
+        if (lastConsole && lastConsole === con) {
             option.selected = true;
         }
 
