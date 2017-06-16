@@ -84,7 +84,7 @@ const createWindow = () => {
 app.on('ready', () => {
   createWindow();
 
-  if (/^darwin/.test(platform)) {
+  if (/^darwin/.test(process.platform)) {
     app.dock.hide()
   }
 
