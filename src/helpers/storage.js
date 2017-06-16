@@ -69,9 +69,7 @@ exports.getLastDirectory = () => {
 
 exports.setDirectories = value => {
     load();
-    if(!data[directoriesKey].includes(value)) {
-        data[directoriesKey].push(value);
-    }
+    data[directoriesKey] = value;
     save();
 }
 

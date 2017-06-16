@@ -30,7 +30,7 @@ store.on('stateChanged', function(newState, oldState) {
     }
 
     if (newState.directories !== oldState.directories) {
-        documentHelper.appendSavedDirectories();
+        documentHelper.appendSavedDirectories(newState.directories, newState.lastDirectory);
         storage.setDirectories(newState.directories);        
     }
 
@@ -44,5 +44,3 @@ store.on('stateChanged', function(newState, oldState) {
 });
 
 documentHelper.init(store);
-documentHelper.appendConsoles();
-documentHelper.appendSavedDirectories();

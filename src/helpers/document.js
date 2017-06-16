@@ -33,10 +33,11 @@ const init = (localStore) => {
 
     $removeButton.addEventListener("click", (ev) => {
         const { directories } = store.getState();
-        let currentDirectories = directories.splice($savedDirectories.selectedIndex, 1);
+        const clonedDirectories = directories.slice(0); 
+        clonedDirectories.splice($savedDirectories.selectedIndex, 1);
         store.setState({
-            lastDirectory: currentDirectories[0],
-            directories: currentDirectories,
+            lastDirectory: directories[0],
+            directories: clonedDirectories,
         });
     });
 
@@ -84,7 +85,10 @@ const init = (localStore) => {
             });
     };
 
-    appendDirectories(store.getState().lastDirectory);
+    const state = store.getState();
+    appendDirectories(state.lastDirectory);
+    appendSavedDirectories(state.directories, state.lastDirectory);
+    appendConsoles();
 };
 
 const appendDirectories = (directory) => {
@@ -112,12 +116,11 @@ const appendDirectories = (directory) => {
     })
 };
 
-const appendSavedDirectories = () => {
+const appendSavedDirectories = (directories, lastDirectory) => {
     while ($savedDirectories.hasChildNodes()) {
-        $savedDirectories.removeChild(savedDirectories.lastChild);
+        $savedDirectories.removeChild($savedDirectories.lastChild);
     }
 
-    const { directories, lastDirectory } = store.getState();
     directories.forEach(directory => {
         const option = document.createElement('option');
         option.value = directory;
