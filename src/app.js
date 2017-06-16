@@ -5,4 +5,7 @@ documentHelper.appendConsoles();
 documentHelper.appendSavedDirectories();
 documentHelper.appendDirectories();
 documentHelper.printSubdirectories();
-documentHelper.checkForUpdates();
+
+if (process.env.NODE_ENV !== 'development') {
+    documentHelper.checkForUpdates();
+}
