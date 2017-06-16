@@ -15,16 +15,21 @@ if (setupEvents.handleSquirrelEvent()) {
    // squirrel event handled and app will exit in 1000ms, so don't do anything else
    return;
 }
- 
+
 const gitEasyAutoLauncher = new AutoLaunch({
     name: 'git-easy',
     isHidden: true,
+    mac: {
+      useLaunchAgent: true,
+    },
 });
 
 gitEasyAutoLauncher.isEnabled().then((enabled) => {
     if (enabled || process.env.NODE_ENV === 'development') return;
     return gitEasyAutoLauncher.enable();
 }).then((err) => {});
+
+app.dock.hide();
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
