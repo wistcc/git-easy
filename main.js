@@ -15,13 +15,19 @@ if (setupEvents.handleSquirrelEvent()) {
    // squirrel event handled and app will exit in 1000ms, so don't do anything else
    return;
 }
- 
+
 const gitEasyAutoLauncher = new AutoLaunch({
     name: 'git-easy',
     isHidden: true,
+    mac: {
+      useLaunchAgent: true,
+    },
 });
- 
-gitEasyAutoLauncher.enable();
+
+gitEasyAutoLauncher.isEnabled().then((enabled) => {
+    if (enabled || process.env.NODE_ENV === 'development') return;
+    return gitEasyAutoLauncher.enable();
+}).then((err) => {});
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -54,8 +60,8 @@ const createWindow = () => {
   });
 
   mainWindow.on('blur', function() {
-    if(!isBrowsing) {
-      mainWindow.hide();
+    if (!isBrowsing) {
+      hideWindow();
     }
     isBrowsing = false;
   });
@@ -77,6 +83,11 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
   createWindow();
+
+  if (/^darwin/.test(process.platform)) {
+    app.dock.hide()
+  }
+
   tray = new Tray(path.join(__dirname, '/src/assets/images/icon.png'));
   tray.setToolTip('Git Easy');
 
@@ -122,5 +133,10 @@ ipcMain.on('mark-as-browsing', () => {
 });
 
 ipcMain.on('hide-main-window', () => {
-  mainWindow.hide();
+  hideWindow();
 });
+
+function hideWindow() {
+  mainWindow.hide();
+  mainWindow.webContents.send('clear-filter');  
+}

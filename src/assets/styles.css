@@ -180,3 +180,12 @@ body {
 .hidden {
     display: none !important;
 }
+
+#filter {
+    text-align: center;
+    display: block;
+    font-family: Helvetica;
+	font-size: 14px;
+	color: white;
+	text-transform: uppercase;
+}
