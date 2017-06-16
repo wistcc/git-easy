@@ -1,5 +1,6 @@
 const { dialog } = require('electron').remote;
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
+const { version } = require('../../package.json');
 const fs = require('fs');
 const path = require('path');
 const storage = require('./storage');
@@ -9,6 +10,7 @@ const consoles = require('../core/consoles');
 const lastDirectory = storage.getLastDirectory() || storage.getDirectories()[0];
 let subdirectories = [];
 
+const $updateAvailable = document.getElementById('updateAvailable');
 const $savedDirectories = document.getElementById('savedDirectories');
 const $consoleList = document.getElementById('consoleList');
 const $filter = document.getElementById('filter');
@@ -55,6 +57,10 @@ const init = () => {
             appendSavedDirectories();
             printSubdirectories();
         }
+    });
+
+    $updateAvailable.addEventListener("click", () => {
+        shell.openExternal('https://github.com/wistcc/git-easy/releases');
     });
 
     document.onkeyup = function (e) {
@@ -176,6 +182,17 @@ const appendConsoles = () => {
     }
 };
 
+const checkForUpdates = () => {
+  fetch('https://api.github.com/repos/wistcc/git-easy/tags')
+    .then(response => { return response.json(); })
+    .then(data => {
+        //TODO: get the correct version number and compare which is greater. Semver compare.
+        if (!data[0].name.includes(version)) {
+            $updateAvailable.classList.remove('hidden');
+        }
+  });
+};
+
 const getFilteredSubdirectories = (sub, filter) => {
     const regx = new RegExp(filter, 'i');
     return sub.filter(s => regx.test(s.folder));
@@ -194,4 +211,5 @@ module.exports = {
     appendSavedDirectories,
     appendDirectories,
     printSubdirectories,
-}
+    checkForUpdates,
+};
