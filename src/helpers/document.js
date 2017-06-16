@@ -36,7 +36,7 @@ const init = (localStore) => {
         const clonedDirectories = directories.slice(0); 
         clonedDirectories.splice($savedDirectories.selectedIndex, 1);
         store.setState({
-            lastDirectory: directories[0],
+            lastDirectory: clonedDirectories[0] || '',
             directories: clonedDirectories,
         });
     });
@@ -93,6 +93,9 @@ const init = (localStore) => {
 
 const appendDirectories = (directory) => {
     if (!directory) {
+        store.setState({
+            subdirectories: [],
+        });
         return;
     }
 
@@ -113,7 +116,7 @@ const appendDirectories = (directory) => {
 
     store.setState({
         subdirectories
-    })
+    });
 };
 
 const appendSavedDirectories = (directories, lastDirectory) => {
