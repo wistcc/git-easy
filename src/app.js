@@ -44,3 +44,7 @@ store.on('stateChanged', function(newState, oldState) {
 });
 
 documentHelper.init(store);
+
+if (process.env.NODE_ENV !== 'development') {
+    documentHelper.checkForUpdates();
+}

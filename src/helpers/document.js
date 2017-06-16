@@ -1,10 +1,12 @@
 const { dialog } = require('electron').remote;
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
+const { version } = require('../../package.json');
 const fs = require('fs');
 const path = require('path');
 const command = require('../core/command');
 const consoles = require('../core/consoles');
 
+const $updateAvailable = document.getElementById('updateAvailable');
 const $savedDirectories = document.getElementById('savedDirectories');
 const $consoleList = document.getElementById('consoleList');
 const $removeButton = document.getElementById('removeButton');
@@ -60,6 +62,11 @@ const init = (localStore) => {
         const { filteredSubdirectories } = store.getState();
         let { directoryFilter } = store.getState();
 
+    $updateAvailable.addEventListener("click", () => {
+        shell.openExternal('https://github.com/wistcc/git-easy/releases');
+    });
+
+    document.onkeyup = function (e) {
         const key = Number(e.key);
         if (key >= 0) {
             const con = $consoleList.options[$consoleList.selectedIndex].value;
@@ -154,6 +161,17 @@ const appendConsoles = () => {
     }
 };
 
+const checkForUpdates = () => {
+  fetch('https://api.github.com/repos/wistcc/git-easy/tags')
+    .then(response => { return response.json(); })
+    .then(data => {
+        //TODO: get the correct version number and compare which is greater. Semver compare.
+        if (!data[0].name.includes(version)) {
+            $updateAvailable.classList.remove('hidden');
+        }
+  });
+};
+
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
     store.setState({
@@ -166,4 +184,7 @@ module.exports = {
     appendConsoles,
     appendSavedDirectories,
     appendDirectories,
-}
+    printSubdirectories,
+    checkForUpdates,
+};
+

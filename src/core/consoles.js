@@ -21,13 +21,13 @@ const consoles = {
 
 exports.get = () => {
     const platform = process.platform;
-    if(/^win/.test(platform)) {
+    if (/^win/.test(platform)) {
         return consoles.win;
     }
-    if(/^linux/.test(platform)) {
+    if (/^linux/.test(platform)) {
         return consoles.linux;
     }
-    if(/^darwin/.test(platform)) {
+    if (/^darwin/.test(platform)) {
         return consoles.mac;
     }
 }
