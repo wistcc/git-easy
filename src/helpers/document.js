@@ -8,6 +8,7 @@ const consoles = require('../core/consoles');
 
 const lastDirectory = storage.getLastDirectory() || storage.getDirectories()[0];
 let currentSubDirectories = [];
+let selectedDirectory = 0;
 
 var savedDirectories = document.getElementById('savedDirectories');
 var consoleList = document.getElementById('consoleList');
@@ -64,7 +65,76 @@ const init = () => {
         if(e.keyCode === 27) {
             ipcRenderer.send('hide-main-window');
         }
+
+        //Up was pressed 
+        if (e.keyCode === 38 ) {
+            turnUpSelector();
+        }
+
+        //Enter was pressed
+        if (e.keyCode === 13 ) {
+           var btns = document.getElementsByClassName("directoryButton"); 
+           btns[selectedDirectory].click();       
+        }
+        
+        //Down was pressed
+        if (e.keyCode === 40 ) {            
+            turnDownSelector();
+        }
+
     };
+    
+};
+
+
+const turnUpSelector = () =>{
+    var btns = document.getElementsByClassName("directoryButton"); 
+
+    if (selectedDirectory != 0)
+    {
+        if (selectedDirectory == btns.length)
+        {          
+            btns[selectedDirectory+1].className += " selected"; 
+            selectedDirectory = 0;
+         
+        }else
+        {
+            btns[selectedDirectory + 1].className = "directoryButton ";  
+            btns[selectedDirectory].className += " selected"; 
+             selectedDirectory++;
+        }                       
+    }
+    else
+    {     
+        btns[selectedDirectory+1].className += " selected";
+        btns[btns.length].className = "directoryButton ";     
+        selectedDirectory++;
+    }   
+};
+
+const turnDownSelector = () =>{
+     var btns = document.getElementsByClassName("directoryButton"); 
+
+    if (selectedDirectory != 0)
+    {
+        if (selectedDirectory == btns.length)
+        {          
+            btns[selectedDirectory-1].className += " selected"; 
+            selectedDirectory = 0;
+         
+        }else
+        {
+            btns[selectedDirectory - 1].className = "directoryButton ";  
+            btns[selectedDirectory].className += " selected"; 
+             selectedDirectory++;
+        }                       
+    }
+    else
+    {       
+        btns[btns.length-1].className = "directoryButton ";  
+        btns[selectedDirectory].className += " selected";
+        selectedDirectory++;
+    }   
 };
 
 const appendDirectories = (directory = lastDirectory) => {
