@@ -27,7 +27,8 @@ const init = () => {
         const list = e.srcElement;
         const option = list.options[list.selectedIndex].value;
         storage.setLastDirectory(option);
-        appendDirectories(option);
+        selectedDirectory = 0;
+        appendDirectories(option);      
     });
 
     removeButton.addEventListener("click", () => {
@@ -51,7 +52,7 @@ const init = () => {
             storage.setLastDirectory(paths[0]);
             appendSavedDirectories();
         }
-    });
+    });   
 
     document.onkeyup = function(e) {
         const key = Number(e.key);
@@ -86,7 +87,6 @@ const init = () => {
     
 };
 
-
 const turnUpSelector = () => {
     var btns = document.getElementsByClassName("directoryButton"); 
     btns[selectedDirectory].className = "directoryButton";  
@@ -102,19 +102,19 @@ const turnUpSelector = () => {
 
 const turnDownSelector = () =>{
      var btns = document.getElementsByClassName("directoryButton"); 
-    
-    if (selectedDirectory != 0) {
-        btns[selectedDirectory].className = "directoryButton"; 
-        selectedDirectory++; 
-        btns[selectedDirectory].className += " selected";
-        
-    } else {
-       
-        btns[selectedDirectory].className += " selected";
-        selectedDirectory++;
-        
-    }
-     
+
+    selectedDirectory++;
+
+     if( selectedDirectory > 0 )
+         btns[selectedDirectory - 1].className = "directoryButton";    
+
+     if (selectedDirectory == btns.length) {
+        btns[btns.length - 1].className = "directoryButton";
+        selectedDirectory = 0;
+     }
+
+    btns[selectedDirectory].className += " selected"; 
+  
 };
 
 const appendDirectories = (directory = lastDirectory) => {
