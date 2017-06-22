@@ -5,7 +5,7 @@ exports.exec = (path, selectedConsole) => {
     const command = consoles.get()[selectedConsole].command;
     let fullCommand = `cd / && cd ${path} && ${command}`;
 
-    if(/^win/.test(process.platform)) {
+    if (/^win/.test(process.platform)) {
         const drive = path.substr(0,2);
         fullCommand = `${drive} && cd ${path} && ${command}`;
     }
