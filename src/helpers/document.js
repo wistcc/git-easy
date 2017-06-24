@@ -177,6 +177,7 @@ const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     button.setAttribute('data-path', directory);
 
     button.addEventListener("click", (e) => {
+        const list = document.getElementById("consoleList");
         const con = $consoleList.options[list.selectedIndex].value;
 
         command.exec(e.srcElement.getAttribute('data-path'), con);
