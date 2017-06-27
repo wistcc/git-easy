@@ -8,7 +8,11 @@ const command = require('../core/command');
 const consoles = require('../core/consoles');
 
 const lastDirectory = storage.getLastDirectory() || storage.getDirectories()[0];
+
+let currentSubDirectories = [];
 let subdirectories = [];
+let selectedDirectory = 0;
+
 
 const $updateAvailable = document.getElementById('updateAvailable');
 const $savedDirectories = document.getElementById('savedDirectories');
@@ -31,7 +35,9 @@ const init = () => {
         const list = e.srcElement;
         const option = list.options[list.selectedIndex].value;
         storage.setLastDirectory(option);
-        appendDirectories(option);
+
+        selectedDirectory = 0;
+        appendDirectories(option);      
         printSubdirectories();
     });
 
@@ -57,7 +63,7 @@ const init = () => {
             appendSavedDirectories();
             printSubdirectories();
         }
-    });
+    });   
 
     $updateAvailable.addEventListener("click", () => {
         shell.openExternal('https://github.com/wistcc/git-easy/releases');
@@ -76,6 +82,22 @@ const init = () => {
             ipcRenderer.send('hide-main-window');
         }
 
+        //Up was pressed 
+        if (e.keyCode === 38 ) {
+            turnUpSelector();
+        }
+
+        //Enter was pressed
+        if (e.keyCode === 13 ) {
+           var btns = document.getElementsByClassName("directoryButton"); 
+           btns[selectedDirectory].click();       
+        }
+        
+        //Down was pressed
+        if (e.keyCode === 40 ) {            
+            turnDownSelector();
+        }
+
         //Backspace was pressed
         if (e.keyCode === 8) {
             dirFilter = dirFilter.slice(0, -1);
@@ -89,7 +111,40 @@ const init = () => {
             $filter.innerHTML = dirFilter;
             printSubdirectories();
         }
+
     };
+    
+};
+
+const turnUpSelector = () => {
+    var btns = document.getElementsByClassName("directoryButton"); 
+    btns[selectedDirectory].className = "directoryButton";  
+
+     if (selectedDirectory == 0) {         
+         selectedDirectory = (btns.length - 1);
+         btns[selectedDirectory].className += " selected";
+     }else{ 
+        selectedDirectory--;
+        btns[selectedDirectory].className += " selected";         
+     }
+};
+
+const turnDownSelector = () =>{
+     var btns = document.getElementsByClassName("directoryButton"); 
+
+    selectedDirectory++;
+
+    if( selectedDirectory > 0 ){
+         btns[selectedDirectory - 1].className = "directoryButton"; 
+    }
+           
+
+    if (selectedDirectory == btns.length) {
+        btns[btns.length - 1].className = "directoryButton";
+        selectedDirectory = 0;
+    }
+
+    btns[selectedDirectory].className += " selected";   
 };
 
 const appendDirectories = (directory = lastDirectory) => {
