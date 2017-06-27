@@ -38,10 +38,27 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
     });
 };
 
+exports.printConsoles = (consoles) => {
+    const { lastConsole } = store.getState();
+    const $consoleList = document.getElementById('consoleList');
+
+    for (con in consoles) {
+        const option = document.createElement('option');
+        option.value = con;
+        option.innerHTML = con;
+
+        if (lastConsole && lastConsole === con) {
+            option.selected = true;
+        }
+
+        consoleList.appendChild(option);
+    }
+};
+
 const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     const button = document.createElement('button');
     const $consoleList = document.getElementById('consoleList');
-    
+
     const innerHTML = buttonIndex >= 0 ? `${buttonIndex}- ${name}` : name;
 
     button.innerHTML = innerHTML;

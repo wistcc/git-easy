@@ -2,6 +2,7 @@ const documentHelper = require('./src/helpers/document');
 const Store = require('./src/core/store');
 const storage = require('./src/helpers/storage');
 const ui = require('./src/helpers/ui');
+const consoles = require('./src/core/consoles');
 
 const initialState = storage.getInitialState();
 
@@ -47,7 +48,7 @@ const { lastDirectory, directories } = store.getState();
 
 documentHelper.init(store);
 documentHelper.appendDirectories(lastDirectory);
-documentHelper.appendConsoles();
+ui.printConsoles(consoles.get());
 ui.printSavedDirectories(directories, lastDirectory);
 
 if (process.env.NODE_ENV !== 'development') {

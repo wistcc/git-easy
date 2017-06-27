@@ -4,7 +4,6 @@ const { version } = require('../../package.json');
 const fs = require('fs');
 const path = require('path');
 const command = require('../core/command');
-const consoles = require('../core/consoles');
 
 const $updateAvailable = document.getElementById('updateAvailable');
 const $savedDirectories = document.getElementById('savedDirectories');
@@ -91,10 +90,6 @@ const init = (localStore) => {
                     directoryFilter: directoryFilter += e.key
                 });
         };
-
-        const state = store.getState();
-        appendDirectories(state.lastDirectory);
-        appendConsoles();
     };
 };
 
@@ -126,23 +121,6 @@ const appendDirectories = (directory) => {
     });
 };
 
-const appendConsoles = () => {
-    const defaultConsoles = consoles.get();
-    const { lastConsole } = store.getState();
-
-    for (con in defaultConsoles) {
-        const option = document.createElement('option');
-        option.value = con;
-        option.innerHTML = con;
-
-        if (lastConsole && lastConsole === con) {
-            option.selected = true;
-        }
-
-        consoleList.appendChild(option);
-    }
-};
-
 const checkForUpdates = () => {
     fetch('https://api.github.com/repos/wistcc/git-easy/tags')
         .then(response => {
@@ -165,7 +143,6 @@ ipcRenderer.on('clear-filter', () => {
 
 module.exports = {
     init,
-    appendConsoles,
     appendDirectories,
     checkForUpdates,
 };
