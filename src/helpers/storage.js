@@ -16,7 +16,6 @@ const load = () => {
         data = {
             directories: [],
             lastDirectory: '',
-            lastConsole: '',
             directoryFilter: '',
             subdirectories: [],
             filteredSubdirectories: [],
