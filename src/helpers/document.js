@@ -35,7 +35,7 @@ const init = (localStore) => {
 
     $removeButton.addEventListener("click", (ev) => {
         const { directories } = store.getState();
-        const clonedDirectories = directories.slice(0); 
+        const clonedDirectories = directories.slice(0);
         clonedDirectories.splice($savedDirectories.selectedIndex, 1);
         store.setState({
             lastDirectory: clonedDirectories[0] || '',
@@ -62,40 +62,40 @@ const init = (localStore) => {
         const { filteredSubdirectories } = store.getState();
         let { directoryFilter } = store.getState();
 
-    $updateAvailable.addEventListener("click", () => {
-        shell.openExternal('https://github.com/wistcc/git-easy/releases');
-    });
+        $updateAvailable.addEventListener("click", () => {
+            shell.openExternal('https://github.com/wistcc/git-easy/releases');
+        });
 
-    document.onkeyup = function (e) {
-        const key = Number(e.key);
-        if (key >= 0) {
-            const con = $consoleList.options[$consoleList.selectedIndex].value;
-            const sub = filteredSubdirectories[key];
-            command.exec(path.join(sub.root, sub.folder), con);
-        }
+        document.onkeyup = function (e) {
+            const key = Number(e.key);
+            if (key >= 0) {
+                const con = $consoleList.options[$consoleList.selectedIndex].value;
+                const sub = filteredSubdirectories[key];
+                command.exec(path.join(sub.root, sub.folder), con);
+            }
 
-        //Esc was pressed
-        if (e.keyCode === 27) {
-            ipcRenderer.send('hide-main-window');
-        }
+            //Esc was pressed
+            if (e.keyCode === 27) {
+                ipcRenderer.send('hide-main-window');
+            }
 
-        //Backspace was pressed
-        if (e.keyCode === 8)
-            store.setState({
-                directoryFilter: directoryFilter.slice(0, -1)
-            });
+            //Backspace was pressed
+            if (e.keyCode === 8)
+                store.setState({
+                    directoryFilter: directoryFilter.slice(0, -1)
+                });
 
-        // Any a-z letter was pressed
-        if (/^[A-Z]$/i.test(e.key))
-            store.setState({
-                directoryFilter: directoryFilter += e.key
-            });
+            // Any a-z letter was pressed
+            if (/^[A-Z]$/i.test(e.key))
+                store.setState({
+                    directoryFilter: directoryFilter += e.key
+                });
+        };
+
+        const state = store.getState();
+        appendDirectories(state.lastDirectory);
+        appendConsoles();
     };
-
-    const state = store.getState();
-    appendDirectories(state.lastDirectory);
-    appendSavedDirectories(state.directories, state.lastDirectory);
-    appendConsoles();
 };
 
 const appendDirectories = (directory) => {
@@ -126,24 +126,6 @@ const appendDirectories = (directory) => {
     });
 };
 
-const appendSavedDirectories = (directories, lastDirectory) => {
-    while ($savedDirectories.hasChildNodes()) {
-        $savedDirectories.removeChild($savedDirectories.lastChild);
-    }
-
-    directories.forEach(directory => {
-        const option = document.createElement('option');
-        option.value = directory;
-        option.innerHTML = directory;
-
-        if (lastDirectory && lastDirectory === directory) {
-            option.selected = true;
-        }
-
-        $savedDirectories.appendChild(option);
-    });
-};
-
 const appendConsoles = () => {
     const defaultConsoles = consoles.get();
     const { lastConsole } = store.getState();
@@ -162,14 +144,16 @@ const appendConsoles = () => {
 };
 
 const checkForUpdates = () => {
-  fetch('https://api.github.com/repos/wistcc/git-easy/tags')
-    .then(response => { return response.json(); })
-    .then(data => {
-        //TODO: get the correct version number and compare which is greater. Semver compare.
-        if (!data[0].name.includes(version)) {
-            $updateAvailable.classList.remove('hidden');
-        }
-  });
+    fetch('https://api.github.com/repos/wistcc/git-easy/tags')
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            //TODO: get the correct version number and compare which is greater. Semver compare.
+            if (!data[0].name.includes(version)) {
+                $updateAvailable.classList.remove('hidden');
+            }
+        });
 };
 
 // When main-window is hidden, reset filter
@@ -182,9 +166,6 @@ ipcRenderer.on('clear-filter', () => {
 module.exports = {
     init,
     appendConsoles,
-    appendSavedDirectories,
     appendDirectories,
-    printSubdirectories,
     checkForUpdates,
 };
-

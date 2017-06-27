@@ -18,6 +18,26 @@ exports.printFilter = (filter) => {
     document.getElementById('filter').innerHTML = filter;
 }
 
+exports.printSavedDirectories = (directories, lastDirectory) => {
+    const $savedDirectories = document.getElementById('savedDirectories');
+
+    while ($savedDirectories.hasChildNodes()) {
+        $savedDirectories.removeChild($savedDirectories.lastChild);
+    }
+
+    directories.forEach(directory => {
+        const option = document.createElement('option');
+        option.value = directory;
+        option.innerHTML = directory;
+
+        if (lastDirectory && lastDirectory === directory) {
+            option.selected = true;
+        }
+
+        $savedDirectories.appendChild(option);
+    });
+};
+
 const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     const button = document.createElement('button');
     const $consoleList = document.getElementById('consoleList');

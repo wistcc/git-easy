@@ -30,7 +30,7 @@ store.on('stateChanged', function(newState, oldState) {
     }
 
     if (newState.directories !== oldState.directories) {
-        documentHelper.appendSavedDirectories(newState.directories, newState.lastDirectory);
+        ui.printSavedDirectories(newState.directories, newState.lastDirectory);
         storage.setDirectories(newState.directories);        
     }
 
@@ -43,7 +43,12 @@ store.on('stateChanged', function(newState, oldState) {
         ui.printSubdirectories(newState.filteredSubdirectories);
 });
 
+const { lastDirectory, directories } = store.getState();
+
 documentHelper.init(store);
+documentHelper.appendDirectories(lastDirectory);
+documentHelper.appendConsoles();
+ui.printSavedDirectories(directories, lastDirectory);
 
 if (process.env.NODE_ENV !== 'development') {
     documentHelper.checkForUpdates();
