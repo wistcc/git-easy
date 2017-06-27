@@ -9,7 +9,7 @@ let data = null;
 
 const load = () => {
     if (data !== null) {
-        return data;
+        return;
     } 
 
     if (!fs.existsSync(dataFilePath)) {
@@ -39,57 +39,16 @@ exports.setLastConsole = value => {
     save();
 }
 
-exports.getLastConsole = () => { 
-    load();
-    var value = null;
-
-    if (lastConsoleKey in data) {
-        value = data[lastConsoleKey];
-    } 
-
-    return value;
-}
-
 exports.setLastDirectory = value => {
     load();
     data[lastDirectoryKey] = value;
     save();
 }
 
-exports.getLastDirectory = () => { 
-    load();
-    var value = null;
-
-    if (lastDirectoryKey in data) {
-        value = data[lastDirectoryKey];
-    } 
-
-    return value;
-}
-
 exports.setDirectories = value => {
     load();
     data[directoriesKey] = value;
     save();
-}
-
-exports.getDirectories = () => { 
-    load();
-    var value = [];
-
-    if (directoriesKey in data) {
-        value = data[directoriesKey];
-    } 
-
-    return value;
-}
-
-exports.deleteDirectory = index => { 
-    load();
-    if (directoriesKey in data) {
-        data[directoriesKey].splice(index, 1);
-        save();
-    }
 }
 
 exports.getInitialState = () => {
