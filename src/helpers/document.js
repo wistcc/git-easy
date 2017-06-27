@@ -50,10 +50,13 @@ const init = (localStore) => {
         });
 
         if (paths) {
-            store.setState({
-                directories: directories.concat(paths[0]),
-                lastDirectory: paths[0]
-            });
+            const newDirectory = paths[0];
+            const partialState = { lastDirectory: newDirectory };
+
+            if(!directories.includes(newDirectory))
+                partialState.directories = directories.concat(newDirectory);
+            
+            store.setState(partialState);
         }
     });
 

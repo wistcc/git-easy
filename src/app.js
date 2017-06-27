@@ -38,6 +38,7 @@ store.on('stateChanged', function(newState, oldState) {
     if (newState.lastDirectory !== oldState.lastDirectory) {
         documentHelper.appendDirectories(newState.lastDirectory);
         storage.setLastDirectory(newState.lastDirectory);
+        ui.printSavedDirectories(newState.directories, newState.lastDirectory);
     }
 
     if (newState.filteredSubdirectories !== oldState.filteredSubdirectories)
