@@ -29,8 +29,14 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
     while ($savedDirectories.hasChildNodes()) {
         $savedDirectories.removeChild($savedDirectories.lastChild);
     }
+    let showAllOption = true;
+    if (directories.length <= 2) {
+        showAllOption = false;
+    }
 
     directories.forEach(directory => {
+        if(!showAllOption && directory === 'All') return;
+
         const option = document.createElement('option');
         option.value = directory;
         option.innerHTML = directory;

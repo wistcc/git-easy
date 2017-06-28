@@ -1,6 +1,6 @@
 const consoles = {
     win: {
-        'cmd': {
+        'Command Prompt': {
             command: 'start "" "cmd"',
         },
         'Git bash': {

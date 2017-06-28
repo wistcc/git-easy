@@ -112,11 +112,11 @@ const appendDirectories = (directory) => {
         isAllSelected = true;
 
         directories.forEach(dir => {
-            if(dir !== 'All') {
-                allSubDirectories.push(
-                    ...fs.readdirSync(dir).map(sub => path.join(dir, sub)),
-                );
-            }
+            if(dir === 'All') return;
+
+            allSubDirectories.push(
+                ...fs.readdirSync(dir).map(sub => path.join(dir, sub)),
+            );
         });
     } else {
         allSubDirectories = fs.readdirSync(directory)
