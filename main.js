@@ -136,7 +136,14 @@ ipcMain.on('hide-main-window', () => {
   hideWindow();
 });
 
+ipcMain.on('register-shortcut-open', (_, shortcut) => {
+  console.log('Global shortcut registered: ', shortcut);
+  globalShortcut.register(shortcut, () => {
+    mainWindow.show();
+  });
+});
+
 function hideWindow() {
   mainWindow.hide();
-  mainWindow.webContents.send('clear-filter');  
+  mainWindow.webContents.send('clear-filter');
 }

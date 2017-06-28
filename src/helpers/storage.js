@@ -20,6 +20,7 @@ const load = () => {
             subdirectories: [],
             filteredSubdirectories: [],
             lastConsole: {},
+            globalShortcut: 'CommandOrControl+Shift+`',
         };
         save();
         return;
