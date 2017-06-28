@@ -14,7 +14,7 @@ const load = () => {
 
     if (!fs.existsSync(dataFilePath)) {
         data = {
-            directories: [],
+            directories: ['All'],
             lastDirectory: '',
             directoryFilter: '',
             subdirectories: [],

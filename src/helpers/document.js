@@ -104,9 +104,26 @@ const appendDirectories = (directory) => {
         return;
     }
 
-    const allSubDirectories = fs.readdirSync(directory);
-    const currentSubDirectories = allSubDirectories.filter(file => {
-        const currentPath = path.join(directory, file);
+    let isAllSelected = false;
+    let allSubDirectories = [];
+
+    if (directory === 'All') {
+        const { directories } = store.getState();
+        isAllSelected = true;
+
+        directories.forEach(dir => {
+            if(dir !== 'All') {
+                allSubDirectories.push(
+                    ...fs.readdirSync(dir).map(sub => path.join(dir, sub)),
+                );
+            }
+        });
+    } else {
+        allSubDirectories = fs.readdirSync(directory)
+            .map(sub => path.join(directory, sub));
+    }
+
+    const currentSubDirectories = allSubDirectories.filter(currentPath => {
         return fs.lstatSync(currentPath).isDirectory() &&
             fs.readdirSync(currentPath).includes(".git");
     });
@@ -115,8 +132,8 @@ const appendDirectories = (directory) => {
         currentSubDirectories.push(directory);
 
     const subdirectories = currentSubDirectories.map(s => ({
-        root: directory,
         folder: s,
+        isAllSelected,
     }));
 
     store.setState({

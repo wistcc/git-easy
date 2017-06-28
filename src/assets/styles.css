@@ -113,7 +113,6 @@ body {
 	line-height: 49px;
 	padding: 0 40px;
 	text-decoration: none;
-	text-transform: uppercase;
 	white-space: nowrap;
     margin-top: 5px;
     display: block;
@@ -131,7 +130,6 @@ body {
 	width: 60px;
 	color: white;
 	text-decoration: none;
-	text-transform: uppercase;
 	font-family: Helvetica;
 	font-weight: 700;
 	font-size: 30px;
@@ -158,7 +156,6 @@ body {
 	width: 60px;
 	color: white;
 	text-decoration: none;
-	text-transform: uppercase;
 	font-family: Helvetica;
 	font-weight: 700;
 	font-size: 30px;
@@ -187,5 +184,4 @@ body {
     font-family: Helvetica;
 	font-size: 14px;
 	color: white;
-	text-transform: uppercase;
 }
