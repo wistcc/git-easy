@@ -60,13 +60,13 @@ const init = (localStore) => {
         }
     });
 
+    $updateAvailable.addEventListener("click", () => {
+        shell.openExternal('https://github.com/wistcc/git-easy/releases');
+    });
+
     document.onkeyup = (e) => {
         const { filteredSubdirectories } = store.getState();
         let { directoryFilter } = store.getState();
-
-        $updateAvailable.addEventListener("click", () => {
-            shell.openExternal('https://github.com/wistcc/git-easy/releases');
-        });
 
         const key = Number(e.key);
 
@@ -158,7 +158,7 @@ const checkForUpdates = () => {
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
     store.setState({
-        directoryFilter: ''
+        directoryFilter: '',
     });
 });
 
