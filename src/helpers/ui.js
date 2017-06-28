@@ -70,7 +70,7 @@ const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
     const button = document.createElement('button');
     const $consoleList = document.getElementById('consoleList');
 
-    const innerHTML = buttonIndex >= 0 ? `${buttonIndex}- ${name}` : name;
+    const innerHTML = buttonIndex >= 0 ? `[${buttonIndex}]${name}` : name;
 
     button.innerHTML = innerHTML;
     button.className = 'directoryButton';
