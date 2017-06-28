@@ -148,8 +148,19 @@ const checkForUpdates = () => {
             return response.json();
         })
         .then(data => {
-            //TODO: get the correct version number and compare which is greater. Semver compare.
-            if (!data[0].name.includes(version)) {
+            const lastVersion = data[0].name.substr(1).split('.');
+            const currentVersion = version.split('.');
+            let showUpdateButton = false;
+
+            lastVersion.forEach((n, i) => {
+                if (showUpdateButton) return;
+
+                if (n > currentVersion[i]) {
+                    showUpdateButton = true;
+                }
+            });
+
+            if (showUpdateButton) {
                 $updateAvailable.classList.remove('hidden');
             }
         });
