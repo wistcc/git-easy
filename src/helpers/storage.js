@@ -13,14 +13,19 @@ const load = () => {
     } 
 
     if (!fs.existsSync(dataFilePath)) {
-        data = {};
-        data[directoriesKey] = [];
-        data[lastDirectoryKey] = undefined;
-        data[lastConsoleKey] = undefined;
+        data = {
+            directories: [],
+            lastDirectory: '',
+            directoryFilter: '',
+            subdirectories: [],
+            filteredSubdirectories: [],
+            lastConsole: {},
+        };
+        save();
         return;
     }
 
-    data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8')); 
+    data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8'));
 }
 
 const save = () => {
@@ -33,57 +38,19 @@ exports.setLastConsole = value => {
     save();
 }
 
-exports.getLastConsole = () => { 
-    load();
-    var value = null;
-
-    if (lastConsoleKey in data) {
-        value = data[lastConsoleKey];
-    } 
-
-    return value;
-}
-
 exports.setLastDirectory = value => {
     load();
     data[lastDirectoryKey] = value;
     save();
 }
 
-exports.getLastDirectory = () => { 
-    load();
-    var value = null;
-
-    if (lastDirectoryKey in data) {
-        value = data[lastDirectoryKey];
-    } 
-
-    return value;
-}
-
 exports.setDirectories = value => {
     load();
-    if (!data[directoriesKey].includes(value)) {
-        data[directoriesKey].push(value);
-    }
+    data[directoriesKey] = value;
     save();
 }
 
-exports.getDirectories = () => { 
+exports.getInitialState = () => {
     load();
-    var value = [];
-
-    if (directoriesKey in data) {
-        value = data[directoriesKey];
-    } 
-
-    return value;
-}
-
-exports.deleteDirectory = index => { 
-    load();
-    if (directoriesKey in data) {
-        data[directoriesKey].splice(index, 1);
-        save();
-    }
+    return data;
 }
