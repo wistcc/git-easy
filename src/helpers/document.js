@@ -69,10 +69,11 @@ const init = (localStore) => {
         });
 
         const key = Number(e.key);
+
         if (key >= 0) {
             const con = $consoleList.options[$consoleList.selectedIndex].value;
             const sub = filteredSubdirectories[key];
-            command.exec(path.join(sub.root, sub.folder), con);
+            command.exec(sub.folder, con);
         }
 
         //Esc was pressed
