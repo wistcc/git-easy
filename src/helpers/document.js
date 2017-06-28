@@ -97,13 +97,6 @@ const init = (localStore) => {
 };
 
 const appendDirectories = (directory) => {
-    if (!directory) {
-        store.setState({
-            subdirectories: [],
-        });
-        return;
-    }
-
     const allSubDirectories = fs.readdirSync(directory);
     const currentSubDirectories = allSubDirectories.filter(file => {
         const currentPath = path.join(directory, file);
