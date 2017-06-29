@@ -73,7 +73,8 @@ const init = (localStore) => {
         if (key >= 0) {
             const con = $consoleList.options[$consoleList.selectedIndex].value;
             const sub = filteredSubdirectories[key];
-            command.exec(path.join(sub.root, sub.folder), con);
+            const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
+            command.exec(currentPath, con);
         }
 
         //Esc was pressed
@@ -106,6 +107,7 @@ const appendDirectories = (directory) => {
     }
 
     let allSubDirectories = [];
+    let currentDirectory = null;
 
     if (directory === 'All') {
         const { directories } = store.getState();
@@ -122,11 +124,18 @@ const appendDirectories = (directory) => {
             );
         });
     } else {
-        allSubDirectories = fs.readdirSync(directory)
-            .map(sub => ({
+        const subs = fs.readdirSync(directory);
+        allSubDirectories = subs.map(sub => ({
                 root: directory,
                 folder: sub,
             }));
+
+        if (subs.includes(".git")) {
+            currentDirectory = {
+                root: null,
+                folder: directory,
+            };
+        }
     }
 
     const currentSubDirectories = allSubDirectories.filter(sub => {
@@ -135,8 +144,9 @@ const appendDirectories = (directory) => {
             fs.readdirSync(currentPath).includes(".git");
     });
 
-    if (allSubDirectories.includes(".git"))
-        currentSubDirectories.push(directory);
+    if (currentDirectory) {
+        currentSubDirectories.push(currentDirectory);
+    }
 
     store.setState({
         subdirectories: currentSubDirectories,

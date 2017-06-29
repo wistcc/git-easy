@@ -12,7 +12,7 @@ exports.printSubdirectories = (subdirectories) => {
             addSubDirectoryButton(
                 directoryList,
                 s.folder,
-                `${s.root}/${s.folder}`,
+                s.root ? `${s.root}/${s.folder}` : s.folder,
                 i < 10 ? i : -1);
         });
 }
