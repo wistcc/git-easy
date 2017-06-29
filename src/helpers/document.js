@@ -68,42 +68,35 @@ const init = (localStore) => {
             shell.openExternal('https://github.com/wistcc/git-easy/releases');
         });
 
-        const key = Number(e.key);
-        if (key >= 0) {
-            const con = $consoleList.options[$consoleList.selectedIndex].value;
-            const sub = filteredSubdirectories[key];
-            command.exec(path.join(sub.root, sub.folder), con);
-        }
+        document.onkeyup = function (e) {
+            const key = Number(e.key);
+            if (key >= 0) {
+                const con = $consoleList.options[$consoleList.selectedIndex].value;
+                const sub = filteredSubdirectories[key];
+                command.exec(path.join(sub.root, sub.folder), con);
+            }
 
-        //Esc was pressed
-        if (e.keyCode === 27) {
-            ipcRenderer.send('hide-main-window');
-        }
+            //Esc was pressed
+            if (e.keyCode === 27) {
+                ipcRenderer.send('hide-main-window');
+            }
 
-        //Backspace was pressed
-        if (e.keyCode === 8) {
-            store.setState({
-                directoryFilter: directoryFilter.slice(0, -1),
-            });
-        }
+            //Backspace was pressed
+            if (e.keyCode === 8)
+                store.setState({
+                    directoryFilter: directoryFilter.slice(0, -1)
+                });
 
-        // Any a-z letter was pressed
-        if (/^[A-Z]$/i.test(e.key)) {
-            store.setState({
-                directoryFilter: directoryFilter += e.key,
-            });
-        }
+            // Any a-z letter was pressed
+            if (/^[A-Z]$/i.test(e.key))
+                store.setState({
+                    directoryFilter: directoryFilter += e.key
+                });
+        };
     };
 };
 
 const appendDirectories = (directory) => {
-    if (!directory) {
-        store.setState({
-            subdirectories: [],
-        });
-        return;
-    }
-
     const allSubDirectories = fs.readdirSync(directory);
     const currentSubDirectories = allSubDirectories.filter(file => {
         const currentPath = path.join(directory, file);

@@ -1,3 +1,4 @@
+const { ipcRenderer } = require('electron');
 const documentHelper = require('./src/helpers/document');
 const Store = require('./src/core/store');
 const storage = require('./src/helpers/storage');
@@ -45,12 +46,14 @@ store.on('stateChanged', function(newState, oldState) {
         ui.printSubdirectories(newState.filteredSubdirectories);
 });
 
-const { lastDirectory, directories } = store.getState();
+const { lastDirectory, directories, globalShortcut } = store.getState();
 
 documentHelper.init(store);
 documentHelper.appendDirectories(lastDirectory);
 ui.printConsoles(consoles.get());
 ui.printSavedDirectories(directories, lastDirectory);
+
+ipcRenderer.send('register-shortcut-open', globalShortcut);
 
 if (process.env.NODE_ENV !== 'development') {
     documentHelper.checkForUpdates();
