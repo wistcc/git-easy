@@ -6,11 +6,11 @@
   "main": "main.js",
   "scripts": {
     "start": "cross-env NODE_ENV='development' electron .",
-    "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds",
-    "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=GitEasy --version-string.FileDescription=GitEasy --version-string.ProductName=\"git-easy\"",
-    "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds",
-    "create-installer-mac": "electron-installer-dmg ./release-builds/git-easy-darwin-x64/git-easy.app git-easy --out=release-builds --overwrite",
-    "create-installer-win": "node src/installers/win/createInstaller.js"
+    "pmac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds",
+    "pwin": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=GitEasy --version-string.FileDescription=GitEasy --version-string.ProductName=\"git-easy\"",
+    "plinux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds",
+    "cimac": "electron-installer-dmg ./release-builds/git-easy-darwin-x64/git-easy.app git-easy --out=release-builds --overwrite",
+    "ciwin": "node src/installers/win/createInstaller.js"
   },
   "repository": "https://github.com/wistcc/git-easy",
   "keywords": [
@@ -22,11 +22,11 @@
   "author": "wistcc <wistcc@gmail.com> http://winnercrespo.com",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^1.6.10",
+    "cross-env": "^5.0.1",
+    "electron": "^1.7.3",
     "electron-installer-dmg": "^0.2.1",
-    "electron-packager": "^8.7.0",
-    "electron-winstaller": "^2.5.2",
-    "cross-env": "^5.0.1"
+    "electron-packager": "^8.7.2",
+    "electron-winstaller": "^2.5.2"
   },
   "dependencies": {
     "auto-launch": "^5.0.1"

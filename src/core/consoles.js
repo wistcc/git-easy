@@ -14,7 +14,7 @@ const consoles = {
     },
     mac: {
         'Terminal': {
-            command: 'open -a Terminal /',
+            command: 'open -a Terminal',
         },
     },
 };
