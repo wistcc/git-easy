@@ -105,12 +105,10 @@ const appendDirectories = (directory) => {
         return;
     }
 
-    let isAllSelected = false;
     let allSubDirectories = [];
 
     if (directory === 'All') {
         const { directories } = store.getState();
-        isAllSelected = true;
 
         directories.forEach(dir => {
             if(dir === 'All') return;
@@ -120,7 +118,6 @@ const appendDirectories = (directory) => {
                     .map(sub => ({
                         root: dir,
                         folder: sub,
-                        isAllSelected,
                     })),
             );
         });
@@ -129,7 +126,6 @@ const appendDirectories = (directory) => {
             .map(sub => ({
                 root: directory,
                 folder: sub,
-                isAllSelected,
             }));
     }
 
