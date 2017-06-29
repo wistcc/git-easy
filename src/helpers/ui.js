@@ -9,12 +9,10 @@ exports.printSubdirectories = (subdirectories) => {
 
     return subdirectories
         .forEach((s, i) => {
-            const index = (s.folder.lastIndexOf('/') + 1) || (s.folder.lastIndexOf('\\') + 1);
-            const name = s.isAllSelected ? s.folder : s.folder.substr(index);
             addSubDirectoryButton(
                 directoryList,
-                name,
                 s.folder,
+                `${s.root}/${s.folder}`,
                 i < 10 ? i : -1);
         });
 }

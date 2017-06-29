@@ -73,7 +73,7 @@ const init = (localStore) => {
         if (key >= 0) {
             const con = $consoleList.options[$consoleList.selectedIndex].value;
             const sub = filteredSubdirectories[key];
-            command.exec(sub.folder, con);
+            command.exec(path.join(sub.root, sub.folder), con);
         }
 
         //Esc was pressed
@@ -116,15 +116,25 @@ const appendDirectories = (directory) => {
             if(dir === 'All') return;
 
             allSubDirectories.push(
-                ...fs.readdirSync(dir).map(sub => path.join(dir, sub)),
+                ...fs.readdirSync(dir)
+                    .map(sub => ({
+                        root: dir,
+                        folder: sub,
+                        isAllSelected,
+                    })),
             );
         });
     } else {
         allSubDirectories = fs.readdirSync(directory)
-            .map(sub => path.join(directory, sub));
+            .map(sub => ({
+                root: directory,
+                folder: sub,
+                isAllSelected,
+            }));
     }
 
-    const currentSubDirectories = allSubDirectories.filter(currentPath => {
+    const currentSubDirectories = allSubDirectories.filter(sub => {
+        const currentPath = path.join(sub.root, sub.folder);
         return fs.lstatSync(currentPath).isDirectory() &&
             fs.readdirSync(currentPath).includes(".git");
     });
@@ -132,13 +142,8 @@ const appendDirectories = (directory) => {
     if (allSubDirectories.includes(".git"))
         currentSubDirectories.push(directory);
 
-    const subdirectories = currentSubDirectories.map(s => ({
-        folder: s,
-        isAllSelected,
-    }));
-
     store.setState({
-        subdirectories
+        subdirectories: currentSubDirectories,
     });
 };
 
