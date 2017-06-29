@@ -55,10 +55,6 @@ const createWindow = () => {
     slashes: true
   }));
 
-  globalShortcut.register('CommandOrControl+Shift+`', () => {
-    mainWindow.show();
-  });
-
   mainWindow.on('blur', function() {
     if (!isBrowsing) {
       hideWindow();
