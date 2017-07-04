@@ -8,13 +8,15 @@ exports.printSubdirectories = (subdirectories) => {
     }
 
     return subdirectories
-        .forEach((s, i) => {
-            addSubDirectoryButton(
-                directoryList,
+        .map((s, i) => {
+            return addSubDirectoryButton(
                 s.folder,
                 s.root ? `${s.root}/${s.folder}` : s.folder,
-                i < 10 ? i : -1);
-        });
+                i < 10 ? i : -1,
+                subdirectories.filter(ss => ss.folder === s.folder).length > 1,
+                );
+        })
+        .forEach(b => directoryList.appendChild(b));
 }
 
 exports.printFilter = (filter) => {
@@ -64,20 +66,32 @@ exports.printConsoles = (consoles) => {
     }
 };
 
-const addSubDirectoryButton = (rootElement, name, directory, buttonIndex) => {
-    const button = document.createElement('button');
+const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirectory) => {
+    const button = document.createElement('div');
+    const $text = document.createElement('div');
+    const $path = document.createElement('div');
     const $consoleList = document.getElementById('consoleList');
-
-    const innerHTML = buttonIndex >= 0 ? `[${buttonIndex}]${name}` : name;
-
-    button.innerHTML = innerHTML;
+    
+    $path.innerHTML = directory;
+    $text.innerHTML = buttonIndex >= 0 ? ` [${buttonIndex}]${name}` : name;
+    
     button.className = 'directoryButton';
+    $text.className = 'inner-text';
+    $path.className = 'inner-path';    
+    
     button.setAttribute('data-path', directory);
+    
+    button.appendChild($text);
+
+    if(shouldPrintDirectory) {
+        button.appendChild($path);  
+        button.classList.add('with-path');
+    }
 
     button.addEventListener("click", (e) => {
         const con = $consoleList.options[$consoleList.selectedIndex].value;
         command.exec(e.srcElement.getAttribute('data-path'), con);
     });
 
-    rootElement.appendChild(button);
+    return button;
 };

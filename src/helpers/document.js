@@ -99,13 +99,6 @@ const init = (localStore) => {
 };
 
 const appendDirectories = (directory) => {
-    if (!directory) {
-        store.setState({
-            subdirectories: [],
-        });
-        return;
-    }
-
     let allSubDirectories = [];
     let currentDirectory = null;
 
