@@ -82,17 +82,22 @@ const init = (localStore) => {
             ipcRenderer.send('hide-main-window');
         }
 
+        //Esc was pressed
+        if (e.keyCode === 27) {
+            ipcRenderer.send('hide-main-window');
+        }
+
         //Backspace was pressed
         if (e.keyCode === 8) {
             store.setState({
-                directoryFilter: directoryFilter.slice(0, -1),
+                directoryFilter: directoryFilter.slice(0, -1)
             });
         }
 
         // Any a-z letter was pressed
         if (/^[A-Z]$/i.test(e.key)) {
             store.setState({
-                directoryFilter: directoryFilter += e.key,
+                directoryFilter: directoryFilter += e.key
             });
         }
     };

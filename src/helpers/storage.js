@@ -7,29 +7,32 @@ const lastConsoleKey = 'lastConsole';
 const dataFilePath = path.join(app.getPath('userData'), 'data.json');
 let data = null;
 
+const defaultData = {
+    directories: ['All'],
+    lastDirectory: '',
+    directoryFilter: '',
+    subdirectories: [],
+    filteredSubdirectories: [],
+    lastConsole: {},
+    globalShortcut: 'CommandOrControl+Shift+`',
+};
+
 const load = () => {
     if (data !== null) {
         return;
-    } 
+    }
 
     if (!fs.existsSync(dataFilePath)) {
-        data = {
-            directories: ['All'],
-            lastDirectory: '',
-            directoryFilter: '',
-            subdirectories: [],
-            filteredSubdirectories: [],
-            lastConsole: {},
-        };
+        data = defaultData;
         save();
         return;
     }
 
-    data = JSON.parse(fs.readFileSync(dataFilePath, 'utf-8'));
+    data = Object.assign(defaultData,  JSON.parse(fs.readFileSync(dataFilePath, 'utf-8')));
 }
 
 const save = () => {
-    fs.writeFileSync(dataFilePath, JSON.stringify(data)); 
+    fs.writeFileSync(dataFilePath, JSON.stringify(data));
 }
 
 exports.setLastConsole = value => {
