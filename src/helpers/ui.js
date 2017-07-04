@@ -90,7 +90,9 @@ const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirector
 
     button.addEventListener("click", (e) => {
         const con = $consoleList.options[$consoleList.selectedIndex].value;
-        command.exec(e.srcElement.getAttribute('data-path'), con);
+        const path = e.srcElement.getAttribute('data-path') ||
+            e.srcElement.parentElement.getAttribute('data-path')
+        command.exec(path, con);
     });
 
     return button;
