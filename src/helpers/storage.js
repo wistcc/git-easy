@@ -29,6 +29,10 @@ const load = () => {
     }
 
     data = Object.assign(defaultData,  JSON.parse(fs.readFileSync(dataFilePath, 'utf-8')));
+
+    if (data.directories.indexOf('All') === -1) {
+        data.directories.unshift('All');
+    }
 }
 
 const save = () => {
