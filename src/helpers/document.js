@@ -157,7 +157,7 @@ const checkForUpdates = () => {
             return response.json();
         })
         .then(data => {
-            const lastVersion = data[0].name.substr(1).split('.');
+            const lastVersion = data[data.length -1].name.substr(1).split('.');
             const currentVersion = version.split('.');
             let showUpdateButton = false;
 
