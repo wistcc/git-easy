@@ -24,7 +24,7 @@ and click the repo to open it. Things you can do:
 - Open Git repository folder with the selected console.
 - Use numbers to open the 10 first listed repos.
 - Start typing to filter repos immediately.
-- The `All` option is automatically and it list the repos on all the saved directories.
+- The `All` option is automatically added and it list the repos on all the saved directories.
 
 ## How the app looks
 ![git-easy](https://user-images.githubusercontent.com/4671080/27847908-f90db7b6-610e-11e7-89fc-fe1180839def.png)
