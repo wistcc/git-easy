@@ -104,6 +104,8 @@ const init = (localStore) => {
 };
 
 const appendDirectories = (directory) => {
+    if (!directory) return;
+
     let allSubDirectories = [];
     let currentDirectory = null;
 
