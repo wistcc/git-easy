@@ -60,60 +60,94 @@ const init = (localStore) => {
         }
     });
 
+    $updateAvailable.addEventListener("click", () => {
+        shell.openExternal('https://github.com/wistcc/git-easy/releases');
+    });
+
     document.onkeyup = (e) => {
         const { filteredSubdirectories } = store.getState();
         let { directoryFilter } = store.getState();
 
-        $updateAvailable.addEventListener("click", () => {
-            shell.openExternal('https://github.com/wistcc/git-easy/releases');
-        });
+        const key = Number(e.key);
 
-        document.onkeyup = function (e) {
-            const key = Number(e.key);
-            if (key >= 0) {
-                const con = $consoleList.options[$consoleList.selectedIndex].value;
-                const sub = filteredSubdirectories[key];
-                command.exec(path.join(sub.root, sub.folder), con);
-            }
+        if (key >= 0) {
+            const con = $consoleList.options[$consoleList.selectedIndex].value;
+            const sub = filteredSubdirectories[key];
+            const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
+            command.exec(currentPath, con);
+        }
 
-            //Esc was pressed
-            if (e.keyCode === 27) {
-                ipcRenderer.send('hide-main-window');
-            }
+        //Esc was pressed
+        if (e.keyCode === 27) {
+            ipcRenderer.send('hide-main-window');
+        }
 
-            //Backspace was pressed
-            if (e.keyCode === 8)
-                store.setState({
-                    directoryFilter: directoryFilter.slice(0, -1)
-                });
+        //Esc was pressed
+        if (e.keyCode === 27) {
+            ipcRenderer.send('hide-main-window');
+        }
 
-            // Any a-z letter was pressed
-            if (/^[A-Z]$/i.test(e.key))
-                store.setState({
-                    directoryFilter: directoryFilter += e.key
-                });
-        };
+        //Backspace was pressed
+        if (e.keyCode === 8) {
+            store.setState({
+                directoryFilter: directoryFilter.slice(0, -1)
+            });
+        }
+
+        // Any a-z letter was pressed
+        if (/^[A-Z]$/i.test(e.key)) {
+            store.setState({
+                directoryFilter: directoryFilter += e.key
+            });
+        }
     };
 };
 
 const appendDirectories = (directory) => {
-    const allSubDirectories = fs.readdirSync(directory);
-    const currentSubDirectories = allSubDirectories.filter(file => {
-        const currentPath = path.join(directory, file);
+    let allSubDirectories = [];
+    let currentDirectory = null;
+
+    if (directory === 'All') {
+        const { directories } = store.getState();
+
+        directories.forEach(dir => {
+            if(dir === 'All') return;
+
+            allSubDirectories.push(
+                ...fs.readdirSync(dir)
+                    .map(sub => ({
+                        root: dir,
+                        folder: sub,
+                    })),
+            );
+        });
+    } else {
+        const subs = fs.readdirSync(directory);
+        allSubDirectories = subs.map(sub => ({
+                root: directory,
+                folder: sub,
+            }));
+
+        if (subs.includes(".git")) {
+            currentDirectory = {
+                root: null,
+                folder: directory,
+            };
+        }
+    }
+
+    const currentSubDirectories = allSubDirectories.filter(sub => {
+        const currentPath = path.join(sub.root, sub.folder);
         return fs.lstatSync(currentPath).isDirectory() &&
             fs.readdirSync(currentPath).includes(".git");
     });
 
-    if (allSubDirectories.includes(".git"))
-        currentSubDirectories.push(directory);
-
-    const subdirectories = currentSubDirectories.map(s => ({
-        root: directory,
-        folder: s,
-    }));
+    if (currentDirectory) {
+        currentSubDirectories.push(currentDirectory);
+    }
 
     store.setState({
-        subdirectories
+        subdirectories: currentSubDirectories,
     });
 };
 
@@ -123,8 +157,19 @@ const checkForUpdates = () => {
             return response.json();
         })
         .then(data => {
-            //TODO: get the correct version number and compare which is greater. Semver compare.
-            if (!data[0].name.includes(version)) {
+            const lastVersion = data[0].name.substr(1).split('.');
+            const currentVersion = version.split('.');
+            let showUpdateButton = false;
+
+            lastVersion.forEach((n, i) => {
+                if (showUpdateButton) return;
+
+                if (n > currentVersion[i]) {
+                    showUpdateButton = true;
+                }
+            });
+
+            if (showUpdateButton) {
                 $updateAvailable.classList.remove('hidden');
             }
         });
@@ -133,7 +178,7 @@ const checkForUpdates = () => {
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
     store.setState({
-        directoryFilter: ''
+        directoryFilter: '',
     });
 });
 

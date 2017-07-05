@@ -33,7 +33,7 @@ store.on('stateChanged', function(newState, oldState) {
 
     if (newState.directories !== oldState.directories) {
         ui.printSavedDirectories(newState.directories, newState.lastDirectory);
-        storage.setDirectories(newState.directories);        
+        storage.setDirectories(newState.directories);
     }
 
     if (newState.lastDirectory !== oldState.lastDirectory) {
