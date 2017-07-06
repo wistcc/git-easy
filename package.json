@@ -24,15 +24,15 @@
   "license": "ISC",
   "devDependencies": {
     "cross-env": "^5.0.1",
-    "electron": "^1.7.3",
     "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^8.7.2",
-    "electron-winstaller": "^2.5.2",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-plugin-import": "^2.6.1"
   },
   "dependencies": {
-    "auto-launch": "^5.0.1"
+    "electron": "^1.7.3",
+    "auto-launch": "^5.0.1",
+    "electron-winstaller": "^2.5.2"
   }
 }

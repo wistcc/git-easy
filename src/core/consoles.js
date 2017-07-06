@@ -8,12 +8,12 @@ const consoles = {
         },
     },
     linux: {
-        'Terminal': {
+        Terminal: {
             command: 'gnome-terminal',
         },
     },
     mac: {
-        'Terminal': {
+        Terminal: {
             command: 'open -a Terminal',
         },
     },
@@ -30,4 +30,5 @@ exports.get = () => {
     if (/^darwin/.test(platform)) {
         return consoles.mac;
     }
-}
+    return null;
+};

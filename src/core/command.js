@@ -1,5 +1,5 @@
 const consoles = require('./consoles');
-const child_process = require('child_process');
+const childProcess = require('child_process');
 
 exports.exec = (path, selectedConsole) => {
     const platform = process.platform;
@@ -7,7 +7,7 @@ exports.exec = (path, selectedConsole) => {
     let fullCommand = '';
 
     if (/^win/.test(platform)) {
-        const drive = path.substr(0,2);
+        const drive = path.substr(0, 2);
         fullCommand = `${drive} && cd ${path} && ${command}`;
     }
     if (/^linux/.test(platform)) {
@@ -17,5 +17,5 @@ exports.exec = (path, selectedConsole) => {
         fullCommand = `${command} ${path}`;
     }
 
-    child_process.exec(fullCommand);
-}
+    childProcess.exec(fullCommand);
+};

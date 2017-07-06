@@ -32,7 +32,7 @@ const init = (localStore) => {
         });
     });
 
-    $removeButton.addEventListener("click", (ev) => {
+    $removeButton.addEventListener('click', () => {
         const { directories } = store.getState();
         const clonedDirectories = directories.slice(0);
         clonedDirectories.splice($savedDirectories.selectedIndex, 1);
@@ -42,7 +42,7 @@ const init = (localStore) => {
         });
     });
 
-    $browseButton.addEventListener("click", () => {
+    $browseButton.addEventListener('click', () => {
         const { directories } = store.getState();
         ipcRenderer.send('mark-as-browsing');
         const paths = dialog.showOpenDialog({
@@ -53,14 +53,15 @@ const init = (localStore) => {
             const newDirectory = paths[0];
             const partialState = { lastDirectory: newDirectory };
 
-            if(!directories.includes(newDirectory))
+            if (!directories.includes(newDirectory)) {
                 partialState.directories = directories.concat(newDirectory);
-            
+            }
+
             store.setState(partialState);
         }
     });
 
-    $updateAvailable.addEventListener("click", () => {
+    $updateAvailable.addEventListener('click', () => {
         shell.openExternal('https://github.com/wistcc/git-easy/releases');
     });
 
@@ -77,17 +78,17 @@ const init = (localStore) => {
             command.exec(currentPath, con);
         }
 
-        //Esc was pressed
+        // Esc was pressed
         if (e.keyCode === 27) {
             ipcRenderer.send('hide-main-window');
         }
 
-        //Esc was pressed
+        // Esc was pressed
         if (e.keyCode === 27) {
             ipcRenderer.send('hide-main-window');
         }
 
-        //Backspace was pressed
+        // Backspace was pressed
         if (e.keyCode === 8) {
             store.setState({
                 directoryFilter: directoryFilter.slice(0, -1)
@@ -112,8 +113,8 @@ const appendDirectories = (directory) => {
     if (directory === 'All') {
         const { directories } = store.getState();
 
-        directories.forEach(dir => {
-            if(dir === 'All') return;
+        directories.forEach((dir) => {
+            if (dir === 'All') return;
 
             allSubDirectories.push(
                 ...fs.readdirSync(dir)
@@ -126,11 +127,11 @@ const appendDirectories = (directory) => {
     } else {
         const subs = fs.readdirSync(directory);
         allSubDirectories = subs.map(sub => ({
-                root: directory,
-                folder: sub,
-            }));
+            root: directory,
+            folder: sub,
+        }));
 
-        if (subs.includes(".git")) {
+        if (subs.includes('.git')) {
             currentDirectory = {
                 root: null,
                 folder: directory,
@@ -138,10 +139,10 @@ const appendDirectories = (directory) => {
         }
     }
 
-    const currentSubDirectories = allSubDirectories.filter(sub => {
+    const currentSubDirectories = allSubDirectories.filter((sub) => {
         const currentPath = path.join(sub.root, sub.folder);
         return fs.lstatSync(currentPath).isDirectory() &&
-            fs.readdirSync(currentPath).includes(".git");
+            fs.readdirSync(currentPath).includes('.git');
     });
 
     if (currentDirectory) {
@@ -155,11 +156,9 @@ const appendDirectories = (directory) => {
 
 const checkForUpdates = () => {
     fetch('https://api.github.com/repos/wistcc/git-easy/tags')
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            const lastVersion = data[data.length -1].name.substr(1).split('.');
+        .then(response => response.json())
+        .then((data) => {
+            const lastVersion = data[data.length - 1].name.substr(1).split('.');
             const currentVersion = version.split('.');
             let showUpdateButton = false;
 
