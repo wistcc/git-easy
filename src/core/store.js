@@ -7,9 +7,8 @@ class Store extends EventEmitter {
     }
 
     getState(key) {
-        if(key)
-            return this.state[key];
-        
+        if (key) { return this.state[key]; }
+
         return this.state;
     }
 

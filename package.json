@@ -10,7 +10,8 @@
     "pwin": "electron-packager . --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=GitEasy --version-string.FileDescription=GitEasy --version-string.ProductName=\"git-easy\"",
     "plinux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds",
     "cimac": "electron-installer-dmg ./release-builds/git-easy-darwin-x64/git-easy.app git-easy --out=release-builds --overwrite",
-    "ciwin": "node src/installers/win/createInstaller.js"
+    "ciwin": "node src/installers/win/createInstaller.js",
+    "lint": "eslint ."
   },
   "repository": "https://github.com/wistcc/git-easy",
   "keywords": [
@@ -23,12 +24,15 @@
   "license": "ISC",
   "devDependencies": {
     "cross-env": "^5.0.1",
-    "electron": "^1.7.3",
     "electron-installer-dmg": "^0.2.1",
     "electron-packager": "^8.7.2",
-    "electron-winstaller": "^2.5.2"
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.6.1"
   },
   "dependencies": {
-    "auto-launch": "^5.0.1"
+    "electron": "^1.7.3",
+    "auto-launch": "^5.0.1",
+    "electron-winstaller": "^2.5.2"
   }
 }

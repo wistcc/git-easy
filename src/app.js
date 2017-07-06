@@ -9,23 +9,24 @@ const initialState = storage.getInitialState();
 
 const store = new Store(initialState);
 
-store.on('stateChanged', function(newState, oldState) {
-    if(newState.lastConsole !== oldState.lastConsole)
+store.on('stateChanged', (newState, oldState) => {
+    if (newState.lastConsole !== oldState.lastConsole) {
         storage.setLastConsole(newState.lastConsole);
+    }
 
     if (newState.directoryFilter !== oldState.directoryFilter) {
         const regx = new RegExp(newState.directoryFilter, 'i');
         const filteredSubdirectories = newState.subdirectories.filter(s => regx.test(s.folder));
-        
-        this.setState({
+
+        store.setState({
             filteredSubdirectories,
         });
-        
+
         ui.printFilter(newState.directoryFilter);
     }
 
     if (newState.subdirectories !== oldState.subdirectories) {
-        this.setState({
+        store.setState({
             filteredSubdirectories: newState.subdirectories,
             directoryFilter: '',
         });
@@ -42,15 +43,16 @@ store.on('stateChanged', function(newState, oldState) {
         ui.printSavedDirectories(newState.directories, newState.lastDirectory);
     }
 
-    if (newState.filteredSubdirectories !== oldState.filteredSubdirectories)
+    if (newState.filteredSubdirectories !== oldState.filteredSubdirectories) {
         ui.printSubdirectories(newState.filteredSubdirectories);
+    }
 });
 
-const { lastDirectory, directories, globalShortcut } = store.getState();
+const { lastDirectory, directories, globalShortcut, lastConsole } = store.getState();
 
 documentHelper.init(store);
 documentHelper.appendDirectories(lastDirectory);
-ui.printConsoles(consoles.get());
+ui.printConsoles(consoles.get(), lastConsole);
 ui.printSavedDirectories(directories, lastDirectory);
 
 ipcRenderer.send('register-shortcut-open', globalShortcut);
