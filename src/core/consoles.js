@@ -30,5 +30,5 @@ exports.get = () => {
     if (/^darwin/.test(platform)) {
         return consoles.mac;
     }
-    return null;
+    return {};
 };

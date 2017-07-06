@@ -82,12 +82,12 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
 exports.printConsoles = (consoles, lastConsole) => {
     const $consoleList = document.getElementById('consoleList');
 
-    consoles.forEach((con) => {
+    Object.keys(consoles).forEach((key) => {
         const option = document.createElement('option');
-        option.value = con;
-        option.innerHTML = con;
+        option.value = key;
+        option.innerHTML = key;
 
-        if (lastConsole && lastConsole === con) {
+        if (lastConsole && lastConsole === key) {
             option.selected = true;
         }
 

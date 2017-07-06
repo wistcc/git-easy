@@ -1,9 +1,9 @@
 const { ipcRenderer } = require('electron');
-const documentHelper = require('./helpers/document');
-const Store = require('./core/store');
-const storage = require('./helpers/storage');
-const ui = require('./helpers/ui');
-const consoles = require('./core/consoles');
+const documentHelper = require('./src/helpers/document');
+const Store = require('./src/core/store');
+const storage = require('./src/helpers/storage');
+const ui = require('./src/helpers/ui');
+const consoles = require('./src/core/consoles');
 
 const initialState = storage.getInitialState();
 
@@ -18,7 +18,7 @@ store.on('stateChanged', (newState, oldState) => {
         const regx = new RegExp(newState.directoryFilter, 'i');
         const filteredSubdirectories = newState.subdirectories.filter(s => regx.test(s.folder));
 
-        this.setState({
+        store.setState({
             filteredSubdirectories,
         });
 
@@ -26,7 +26,7 @@ store.on('stateChanged', (newState, oldState) => {
     }
 
     if (newState.subdirectories !== oldState.subdirectories) {
-        this.setState({
+        store.setState({
             filteredSubdirectories: newState.subdirectories,
             directoryFilter: '',
         });
