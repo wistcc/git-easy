@@ -10,6 +10,7 @@ module.exports = {
         "space-before-function-paren": [
             "error",
             "never"
-        ]
+        ],
+        'import/no-unresolved': 0
     }
 };
