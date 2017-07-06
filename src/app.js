@@ -19,7 +19,7 @@ store.on('stateChanged', (newState, oldState) => {
         const filteredSubdirectories = newState.subdirectories.filter(s => regx.test(s.folder));
 
         store.setState({
-            filteredSubdirectories,
+            filteredSubdirectories
         });
 
         ui.printFilter(newState.directoryFilter);
@@ -28,7 +28,7 @@ store.on('stateChanged', (newState, oldState) => {
     if (newState.subdirectories !== oldState.subdirectories) {
         store.setState({
             filteredSubdirectories: newState.subdirectories,
-            directoryFilter: '',
+            directoryFilter: ''
         });
     }
 

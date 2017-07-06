@@ -17,8 +17,8 @@ const gitEasyAutoLauncher = new AutoLaunch({
     name: 'git-easy',
     isHidden: true,
     mac: {
-        useLaunchAgent: true,
-    },
+        useLaunchAgent: true
+    }
 });
 
 gitEasyAutoLauncher.isEnabled().then((enabled) => {
@@ -45,7 +45,7 @@ const createWindow = () => {
         show: false,
         skipTaskbar: true,
         frame: false,
-        resizable: false,
+        resizable: false
     });
 
     mainWindow.setMenu(null);
@@ -102,7 +102,7 @@ app.on('ready', () => {
                 app.isQuiting = true;
                 app.quit();
             }
-        },
+        }
     ]);
     tray.setContextMenu(contextMenu);
 

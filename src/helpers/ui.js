@@ -44,7 +44,7 @@ exports.printSubdirectories = (subdirectories) => {
                 s.folder,
                 s.root ? `${s.root}/${s.folder}` : s.folder,
                 i < 10 ? i : -1,
-                subdirectories.filter(ss => ss.folder === s.folder).length > 1,
+                subdirectories.filter(ss => ss.folder === s.folder).length > 1
                 ))
         .forEach(b => directoryList.appendChild(b));
 };

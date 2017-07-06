@@ -1,22 +1,22 @@
 const consoles = {
     win: {
         'Command Prompt': {
-            command: 'start "" "cmd"',
+            command: 'start "" "cmd"'
         },
         'Git bash': {
-            command: 'start "" "C:/Program Files/Git/bin/sh.exe"',
-        },
+            command: 'start "" "C:/Program Files/Git/bin/sh.exe"'
+        }
     },
     linux: {
         Terminal: {
-            command: 'gnome-terminal',
-        },
+            command: 'gnome-terminal'
+        }
     },
     mac: {
         Terminal: {
-            command: 'open -a Terminal',
-        },
-    },
+            command: 'open -a Terminal'
+        }
+    }
 };
 
 exports.get = () => {

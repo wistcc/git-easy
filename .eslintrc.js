@@ -5,7 +5,9 @@ module.exports = {
         "fetch": true
     },
     "rules": {
-        "comma-dangle": 0,
+        "comma-dangle": ["error", {
+            "functions": "never",
+        }],
         "indent": [2, 4],
         "space-before-function-paren": [
             "error",

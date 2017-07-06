@@ -13,7 +13,7 @@ const getInstallerConfig = () => {
         noMsi: true,
         outputDirectory: path.join(outPath, 'windows-installer'),
         exe: 'git-easy.exe',
-        setupExe: 'git-easy.exe',
+        setupExe: 'git-easy.exe'
     });
 };
 

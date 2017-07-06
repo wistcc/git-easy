@@ -38,7 +38,7 @@ const init = (localStore) => {
         clonedDirectories.splice($savedDirectories.selectedIndex, 1);
         store.setState({
             lastDirectory: clonedDirectories[0] || '',
-            directories: clonedDirectories,
+            directories: clonedDirectories
         });
     });
 
@@ -120,21 +120,21 @@ const appendDirectories = (directory) => {
                 ...fs.readdirSync(dir)
                     .map(sub => ({
                         root: dir,
-                        folder: sub,
-                    })),
+                        folder: sub
+                    }))
             );
         });
     } else {
         const subs = fs.readdirSync(directory);
         allSubDirectories = subs.map(sub => ({
             root: directory,
-            folder: sub,
+            folder: sub
         }));
 
         if (subs.includes('.git')) {
             currentDirectory = {
                 root: null,
-                folder: directory,
+                folder: directory
             };
         }
     }
@@ -150,7 +150,7 @@ const appendDirectories = (directory) => {
     }
 
     store.setState({
-        subdirectories: currentSubDirectories,
+        subdirectories: currentSubDirectories
     });
 };
 
@@ -179,12 +179,12 @@ const checkForUpdates = () => {
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
     store.setState({
-        directoryFilter: '',
+        directoryFilter: ''
     });
 });
 
 module.exports = {
     init,
     appendDirectories,
-    checkForUpdates,
+    checkForUpdates
 };
