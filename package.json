@@ -29,6 +29,7 @@
     "electron-winstaller": "^2.5.2"
   },
   "dependencies": {
-    "auto-launch": "^5.0.1"
+    "auto-launch": "^5.0.1",
+    "font-awesome": "^4.7.0"
   }
 }
