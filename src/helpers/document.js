@@ -1,8 +1,8 @@
 const { dialog } = require('electron').remote;
 const { ipcRenderer, shell } = require('electron');
-const { version } = require('../../package.json');
 const fs = require('fs');
 const path = require('path');
+const { version } = require('../../package.json');
 const command = require('../core/command');
 
 const $updateAvailable = document.getElementById('updateAvailable');
@@ -10,11 +10,16 @@ const $savedDirectories = document.getElementById('savedDirectories');
 const $consoleList = document.getElementById('consoleList');
 const $removeButton = document.getElementById('removeButton');
 const $browseButton = document.getElementById('browseButton');
+const $consoles = document.getElementById('btn-consoles');
 
 let store = {};
 
 const init = (localStore) => {
     store = localStore;
+
+    $consoles.addEventListener('click', (e) => {
+        document.querySelector('.wrap').classList.toggle('active');
+    });
 
     $consoleList.addEventListener('change', (e) => {
         const list = e.srcElement;
