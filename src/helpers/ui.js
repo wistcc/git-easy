@@ -67,33 +67,32 @@ exports.printConsoles = (consoles) => {
 };
 
 const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirectory) => {
-    const button = document.createElement('div');
     const $text = document.createElement('div');
     const $path = document.createElement('div');
+    const $button = document.createElement('div');
+    const $number = document.createElement('div');
     const $consoleList = document.getElementById('consoleList');
-    
+  
     $path.innerHTML = directory;
-    $text.innerHTML = buttonIndex >= 0 ? ` [${buttonIndex}]${name}` : name;
+    $number.innerHTML = buttonIndex >= 0 ? buttonIndex : '';
+    $text.innerHTML = name;
     
-    button.className = 'directoryButton';
+    $button.className = 'directoryButton';
     $text.className = 'inner-text';
-    $path.className = 'inner-path';    
+    $path.className = 'inner-path';
+    $number.className = 'inner-number';
     
-    button.setAttribute('data-path', directory);
+    $button.setAttribute('data-path', directory);
     
-    button.appendChild($text);
+    $button.appendChild($number);
+    $button.appendChild($text);
+    $button.appendChild($path);  
 
-    if(shouldPrintDirectory) {
-        button.appendChild($path);  
-        button.classList.add('with-path');
-    }
-
-    button.addEventListener("click", (e) => {
+    $button.addEventListener("click", (e) => {
         const con = $consoleList.options[$consoleList.selectedIndex].value;
-        const path = e.srcElement.getAttribute('data-path') ||
-            e.srcElement.parentElement.getAttribute('data-path')
+        const path = $button.getAttribute('data-path')
         command.exec(path, con);
     });
 
-    return button;
+    return $button;
 };
