@@ -119,7 +119,6 @@ select {
 #filter {
     text-align: center;
     display: block;
-    font-family: Helvetica;
     font-size: 14px;
     color: white;
 }
@@ -134,21 +133,17 @@ select {
 }
 
 .inner-text {
-    padding: 16px 0 0 10px;
+    padding: 10px 0 0 10px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-}
-
-.with-path .inner-text {
-    padding-top: 10px;
 }
 
 .inner-number {
     float: left;
     color: var(--light-primary-color);
     font-size: smaller;
-    padding: 2px;
+    padding: 2px 3px;
 }
 
 .wrap {
@@ -166,8 +161,10 @@ select {
 }
 .wrap .content {
   opacity: 0;
-  color: blueviolet;
+  background: var(--light-primary-color);
+  color: var(--dark-primary-color);
 }
+
 .wrap:before {
   position: absolute;
   width: 1px;
@@ -211,14 +208,17 @@ select {
     list-style: none;
     padding: 10px;
     text-align: center;
+    margin: 0;
 }
 
 .wrap li {
     display: block;
     padding: 10px;
     margin: 2px;
-    border: 1px black solid;
+    border: 1px var(--darker-primary-color) solid;
     cursor: pointer;
+    font-size: 14px;
+    letter-spacing: 2px;
 }
 
 .wrap li:hover {

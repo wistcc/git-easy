@@ -52,17 +52,23 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
 exports.printConsoles = (consoles) => {
     const { lastConsole } = store.getState();
     const $consoleList = document.getElementById('consoleList');
+    const $consoleUl = document.querySelector('.wrap .content ul');
 
     for (con in consoles) {
         const option = document.createElement('option');
+        const li = document.createElement('li');
+        li.value = con;
+        li.innerHTML = con;
         option.value = con;
         option.innerHTML = con;
 
         if (lastConsole && lastConsole === con) {
             option.selected = true;
+            li.classList.add(selected);
         }
 
-        consoleList.appendChild(option);
+        $consoleList.appendChild(option);
+        $consoleUl.appendChild(li);
     }
 };
 
