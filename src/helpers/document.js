@@ -6,19 +6,46 @@ const { version } = require('../../package.json');
 const command = require('../core/command');
 
 const $updateAvailable = document.getElementById('updateAvailable');
-const $savedDirectories = document.getElementById('savedDirectories');
+const $savedDirectories = document.getElementById('btn-folders');
 const $consoleList = document.getElementById('consoleList');
 const $removeButton = document.getElementById('removeButton');
 const $browseButton = document.getElementById('browseButton');
 const $consoles = document.getElementById('btn-consoles');
+const $modal = document.querySelector('.wrap');
 
 let store = {};
 
 const init = (localStore) => {
     store = localStore;
 
+    document.addEventListener('click', ev => {
+        //TODO: modal state should be in the state rather than querying the DOM
+        if(
+            !$modal.contains(ev.target) 
+            && $modal.classList.contains('active')
+            && !$consoles.contains(ev.target)
+            && !$savedDirectories.contains(ev.target)
+        ) {
+            store.setState({
+                modalActive: false
+            });
+        }
+    });
+
     $consoles.addEventListener('click', (e) => {
-        document.querySelector('.wrap').classList.toggle('active');
+        const { modalActive, selectedPanel } = store.getState();
+        store.setState({
+            selectedPanel: 'consoles',
+            modalActive: selectedPanel !== 'consoles' || !modalActive
+        });       
+    });
+
+    $savedDirectories.addEventListener('click', (e) => {
+        const { modalActive, selectedPanel } = store.getState();
+        store.setState({
+            selectedPanel: 'directories',
+            modalActive: selectedPanel !== 'directories' || !modalActive
+        });
     });
 
     $consoleList.addEventListener('change', (e) => {

@@ -1,4 +1,6 @@
 const command = require('../core/command');
+const $ul = document.querySelector('.wrap .content ul');
+const $modal = document.querySelector('.wrap');
 
 exports.printSubdirectories = (subdirectories) => {
     const directoryList = document.getElementById('directoryList');
@@ -24,53 +26,55 @@ exports.printFilter = (filter) => {
 }
 
 exports.printSavedDirectories = (directories, lastDirectory) => {
-    const $savedDirectories = document.getElementById('savedDirectories');
-
-    while ($savedDirectories.hasChildNodes()) {
-        $savedDirectories.removeChild($savedDirectories.lastChild);
-    }
-    let showAllOption = true;
-    if (directories.length <= 2) {
-        showAllOption = false;
-    }
+    let showAllOption = directories.length <= 2;
+    
+    clearUl();
 
     directories.forEach(directory => {
         if(!showAllOption && directory === 'All') return;
 
-        const option = document.createElement('option');
+        const option = document.createElement('li');
         option.value = directory;
         option.innerHTML = directory;
 
-        if (lastDirectory && lastDirectory === directory) {
-            option.selected = true;
+        if (lastDirectory === directory) {
+            option.classList.add('selected');
         }
 
-        $savedDirectories.appendChild(option);
+        $ul.appendChild(option);
     });
 };
 
 exports.printConsoles = (consoles) => {
     const { lastConsole } = store.getState();
-    const $consoleList = document.getElementById('consoleList');
-    const $consoleUl = document.querySelector('.wrap .content ul');
+    
+    clearUl();
 
     for (con in consoles) {
-        const option = document.createElement('option');
         const li = document.createElement('li');
         li.value = con;
         li.innerHTML = con;
-        option.value = con;
-        option.innerHTML = con;
 
         if (lastConsole && lastConsole === con) {
-            option.selected = true;
-            li.classList.add(selected);
+            li.classList.add('selected');
         }
 
-        $consoleList.appendChild(option);
-        $consoleUl.appendChild(li);
+        $ul.appendChild(li);
     }
 };
+
+exports.toggleModal = (activate) => {
+    if(activate)
+        $modal.classList.add('active');
+    else
+        $modal.classList.remove('active');    
+}
+
+const clearUl = () => {
+    if ($ul.hasChildNodes()) {
+        $ul.innerHTML = '';
+    }
+}
 
 const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirectory) => {
     const $text = document.createElement('div');
