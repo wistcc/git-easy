@@ -33,10 +33,10 @@ const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirector
 };
 
 exports.printSubdirectories = (subdirectories) => {
-    const directoryList = document.getElementById('directoryList');
+    const $directoryList = document.getElementById('directoryList');
 
-    while (directoryList.hasChildNodes()) {
-        directoryList.removeChild(directoryList.lastChild);
+    while ($directoryList.hasChildNodes()) {
+        $directoryList.removeChild($directoryList.lastChild);
     }
 
     return subdirectories
@@ -46,7 +46,7 @@ exports.printSubdirectories = (subdirectories) => {
                 i < 10 ? i : -1,
                 subdirectories.filter(ss => ss.folder === s.folder).length > 1
                 ))
-        .forEach(b => directoryList.appendChild(b));
+        .forEach(b => $directoryList.appendChild(b));
 };
 
 exports.printFilter = (filter) => {

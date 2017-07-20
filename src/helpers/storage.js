@@ -12,6 +12,7 @@ const defaultData = {
     directories: ['All'],
     lastDirectory: '',
     directoryFilter: '',
+    selectedSubdirectory: null,
     subdirectories: [],
     filteredSubdirectories: [],
     lastConsole: {},

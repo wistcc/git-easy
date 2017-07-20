@@ -7,11 +7,89 @@ const command = require('../core/command');
 
 const $updateAvailable = document.getElementById('updateAvailable');
 const $savedDirectories = document.getElementById('savedDirectories');
+const $directoryList = document.getElementById('directoryList');
 const $consoleList = document.getElementById('consoleList');
 const $removeButton = document.getElementById('removeButton');
 const $browseButton = document.getElementById('browseButton');
 
 let store = {};
+
+const openSubdirectory = (index) => {
+    const { filteredSubdirectories } = store.getState();
+    const con = $consoleList.options[$consoleList.selectedIndex].value;
+    const sub = filteredSubdirectories[index];
+    const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
+    command.exec(currentPath, con);
+};
+
+const selectSubdirectory = (index) => {
+    const subdirectory = $directoryList.children[index];
+
+    subdirectory.classList.add('selected');
+
+    const buttonBoundaries = subdirectory.getBoundingClientRect();
+    const containerBoundaries = $directoryList.getBoundingClientRect();
+    if (buttonBoundaries.bottom > containerBoundaries.height &&
+        buttonBoundaries.top > containerBoundaries.height) {
+        subdirectory.scrollIntoView(false);
+    }
+    if (buttonBoundaries.top < containerBoundaries.top) {
+        subdirectory.scrollIntoView();
+    }
+};
+
+const deselectSubdirectory = () => {
+    const { selectedSubdirectory } = store.getState();
+    if (selectedSubdirectory !== null && selectedSubdirectory >= 0) {
+        $directoryList.children[selectedSubdirectory].classList.remove('selected');
+    }
+
+    if (selectedSubdirectory === null) {
+        $directoryList.scrollTop = 0;
+    }
+};
+
+const selectSubdirectoryUp = () => {
+    const { selectedSubdirectory } = store.getState();
+    let index;
+
+    if (selectedSubdirectory !== null && selectedSubdirectory >= 0) {
+        deselectSubdirectory();
+        index = selectedSubdirectory - 1;
+
+        if (index < 0) {
+            index = 0;
+        }
+
+        selectSubdirectory(index);
+
+        store.setState({
+            selectedSubdirectory: index
+        });
+    }
+};
+
+const selectSubdirectoryDown = () => {
+    const { selectedSubdirectory } = store.getState();
+    let index;
+
+    if (selectedSubdirectory !== null && selectedSubdirectory >= 0) {
+        deselectSubdirectory();
+        index = selectedSubdirectory + 1;
+
+        if (index >= $directoryList.children.length) {
+            index = $directoryList.children.length - 1;
+        }
+    } else {
+        index = 0;
+    }
+
+    selectSubdirectory(index);
+
+    store.setState({
+        selectedSubdirectory: index
+    });
+};
 
 const init = (localStore) => {
     store = localStore;
@@ -66,21 +144,13 @@ const init = (localStore) => {
     });
 
     document.onkeyup = (e) => {
-        const { filteredSubdirectories } = store.getState();
+        const { selectedSubdirectory } = store.getState();
         let { directoryFilter } = store.getState();
 
         const key = Number(e.key);
 
         if (key >= 0) {
-            const con = $consoleList.options[$consoleList.selectedIndex].value;
-            const sub = filteredSubdirectories[key];
-            const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
-            command.exec(currentPath, con);
-        }
-
-        // Esc was pressed
-        if (e.keyCode === 27) {
-            ipcRenderer.send('hide-main-window');
+            openSubdirectory(key);
         }
 
         // Esc was pressed
@@ -93,6 +163,21 @@ const init = (localStore) => {
             store.setState({
                 directoryFilter: directoryFilter.slice(0, -1)
             });
+        }
+
+        // Esc was pressed
+        if (e.keyCode === 38) {
+            selectSubdirectoryUp();
+        }
+
+        // Esc was pressed
+        if (e.keyCode === 40) {
+            selectSubdirectoryDown();
+        }
+
+        // Enter was pressed
+        if (e.keyCode === 13) {
+            openSubdirectory(selectedSubdirectory);
         }
 
         // Any a-z letter was pressed
@@ -178,13 +263,17 @@ const checkForUpdates = () => {
 
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
+    deselectSubdirectory();
+
     store.setState({
-        directoryFilter: ''
+        directoryFilter: '',
+        selectedSubdirectory: null
     });
 });
 
 module.exports = {
     init,
     appendDirectories,
-    checkForUpdates
+    checkForUpdates,
+    deselectSubdirectory
 };

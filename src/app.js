@@ -19,7 +19,8 @@ store.on('stateChanged', (newState, oldState) => {
         const filteredSubdirectories = newState.subdirectories.filter(s => regx.test(s.folder));
 
         store.setState({
-            filteredSubdirectories
+            filteredSubdirectories,
+            selectedSubdirectory: null
         });
 
         ui.printFilter(newState.directoryFilter);
@@ -28,7 +29,8 @@ store.on('stateChanged', (newState, oldState) => {
     if (newState.subdirectories !== oldState.subdirectories) {
         store.setState({
             filteredSubdirectories: newState.subdirectories,
-            directoryFilter: ''
+            directoryFilter: '',
+            selectedSubdirectory: null
         });
     }
 
@@ -45,6 +47,11 @@ store.on('stateChanged', (newState, oldState) => {
 
     if (newState.filteredSubdirectories !== oldState.filteredSubdirectories) {
         ui.printSubdirectories(newState.filteredSubdirectories);
+    }
+
+    if (newState.selectedSubdirectory !== oldState.selectedSubdirectory &&
+        newState.selectedSubdirectory === null) {
+        documentHelper.deselectSubdirectory();
     }
 });
 
