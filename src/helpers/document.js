@@ -22,8 +22,13 @@ const openSubdirectory = (index) => {
     command.exec(currentPath, con);
 };
 
-const selectSubdirectory = (index) => {
-    const subdirectory = $directoryList.children[index];
+const selectSubdirectory = () => {
+    const { selectedSubdirectory } = store.getState();
+    if (selectedSubdirectory === null) {
+        return;
+    }
+
+    const subdirectory = $directoryList.children[selectedSubdirectory];
 
     subdirectory.classList.add('selected');
 
@@ -40,11 +45,9 @@ const selectSubdirectory = (index) => {
 
 const deselectSubdirectory = () => {
     const { selectedSubdirectory } = store.getState();
-    if (selectedSubdirectory !== null && selectedSubdirectory >= 0) {
+    if (selectedSubdirectory !== null) {
         $directoryList.children[selectedSubdirectory].classList.remove('selected');
-    }
-
-    if (selectedSubdirectory === null) {
+    } else {
         $directoryList.scrollTop = 0;
     }
 };
@@ -53,15 +56,13 @@ const selectSubdirectoryUp = () => {
     const { selectedSubdirectory } = store.getState();
     let index;
 
-    if (selectedSubdirectory !== null && selectedSubdirectory >= 0) {
+    if (selectedSubdirectory !== null) {
         deselectSubdirectory();
         index = selectedSubdirectory - 1;
 
         if (index < 0) {
             index = 0;
         }
-
-        selectSubdirectory(index);
 
         store.setState({
             selectedSubdirectory: index
@@ -73,7 +74,7 @@ const selectSubdirectoryDown = () => {
     const { selectedSubdirectory } = store.getState();
     let index;
 
-    if (selectedSubdirectory !== null && selectedSubdirectory >= 0) {
+    if (selectedSubdirectory !== null) {
         deselectSubdirectory();
         index = selectedSubdirectory + 1;
 
@@ -83,8 +84,6 @@ const selectSubdirectoryDown = () => {
     } else {
         index = 0;
     }
-
-    selectSubdirectory(index);
 
     store.setState({
         selectedSubdirectory: index
@@ -165,12 +164,12 @@ const init = (localStore) => {
             });
         }
 
-        // Esc was pressed
+        // Key up was pressed
         if (e.keyCode === 38) {
             selectSubdirectoryUp();
         }
 
-        // Esc was pressed
+        // Key down was pressed
         if (e.keyCode === 40) {
             selectSubdirectoryDown();
         }
@@ -263,8 +262,6 @@ const checkForUpdates = () => {
 
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
-    deselectSubdirectory();
-
     store.setState({
         directoryFilter: '',
         selectedSubdirectory: null
@@ -275,5 +272,6 @@ module.exports = {
     init,
     appendDirectories,
     checkForUpdates,
+    selectSubdirectory,
     deselectSubdirectory
 };

@@ -49,9 +49,12 @@ store.on('stateChanged', (newState, oldState) => {
         ui.printSubdirectories(newState.filteredSubdirectories);
     }
 
-    if (newState.selectedSubdirectory !== oldState.selectedSubdirectory &&
-        newState.selectedSubdirectory === null) {
-        documentHelper.deselectSubdirectory();
+    if (newState.selectedSubdirectory !== oldState.selectedSubdirectory) {
+        if (newState.selectedSubdirectory !== null) {
+            documentHelper.selectSubdirectory();
+        } else {
+            documentHelper.deselectSubdirectory();
+        }
     }
 });
 
