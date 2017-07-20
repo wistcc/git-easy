@@ -35,9 +35,11 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
     
     clearUl();
 
-    directories.forEach(directory => {
-        if(!showAllOption && directory === 'All') return;
+    if(showAllOption) {
+        directories = ['All'].concat(directories);
+    }
 
+    directories.forEach(directory => {
         const option = document.createElement('li');
         option.value = directory;
         option.innerHTML = directory;
@@ -45,6 +47,13 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
         if (lastDirectory === directory) {
             option.classList.add('selected');
         }
+
+        option.addEventListener('click', () => {
+            store.setState({
+                lastDirectory: directory,
+                modalActive: false,
+            });
+        });
 
         $ul.appendChild(option);
     });
