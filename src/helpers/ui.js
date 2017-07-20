@@ -1,6 +1,11 @@
 const command = require('../core/command');
 const $ul = document.querySelector('.wrap .content ul');
 const $modal = document.querySelector('.wrap');
+let store = {};
+
+exports.init = (localStore) => {
+    store = localStore;
+}
 
 exports.printSubdirectories = (subdirectories) => {
     const directoryList = document.getElementById('directoryList');
@@ -15,7 +20,7 @@ exports.printSubdirectories = (subdirectories) => {
                 s.folder,
                 s.root ? `${s.root}/${s.folder}` : s.folder,
                 i < 10 ? i : -1,
-                subdirectories.filter(ss => ss.folder === s.folder).length > 1,
+                subdirectories.filter(ss => ss.folder === s.folder).length > 1
                 );
         })
         .forEach(b => directoryList.appendChild(b));
@@ -45,21 +50,26 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
     });
 };
 
-exports.printConsoles = (consoles) => {
-    const { lastConsole } = store.getState();
-    
+exports.printConsoles = (consoles, lastConsole) => {
     clearUl();
 
-    for (con in consoles) {
-        const li = document.createElement('li');
-        li.value = con;
-        li.innerHTML = con;
+    for (const key in consoles) {
+        const $li = document.createElement('li');
+        $li.value = key;
+        $li.innerHTML = key;
 
-        if (lastConsole && lastConsole === con) {
-            li.classList.add('selected');
+        if (lastConsole && lastConsole === key) {
+            $li.classList.add('selected');
         }
 
-        $ul.appendChild(li);
+        $li.addEventListener('click', () => {
+            store.setState({
+                lastConsole: key,
+                modalActive: false,
+            });
+        });
+
+        $ul.appendChild($li);
     }
 };
 
@@ -81,7 +91,6 @@ const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirector
     const $path = document.createElement('div');
     const $button = document.createElement('div');
     const $number = document.createElement('div');
-    const $consoleList = document.getElementById('consoleList');
   
     $path.innerHTML = directory;
     $number.innerHTML = buttonIndex >= 0 ? buttonIndex : '';
@@ -98,10 +107,10 @@ const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirector
     $button.appendChild($text);
     $button.appendChild($path);  
 
-    $button.addEventListener("click", (e) => {
-        const con = $consoleList.options[$consoleList.selectedIndex].value;
-        const path = $button.getAttribute('data-path')
-        command.exec(path, con);
+    $button.addEventListener("click", function (e) {
+        const { lastConsole } = store.getState();
+        const path = this.getAttribute('data-path')
+        command.exec(path, lastConsole);
     });
 
     return $button;

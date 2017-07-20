@@ -47,7 +47,7 @@ store.on('stateChanged', function(newState, oldState) {
     
     if (newState.selectedPanel !== oldState.selectedPanel) {
         if(newState.selectedPanel === 'consoles')
-            ui.printConsoles(consoles.get());
+            ui.printConsoles(consoles.get(), newState.lastConsole);
         else if (newState.selectedPanel === 'directories')
             ui.printSavedDirectories(newState.directories, newState.lastDirectory);
     }
@@ -60,6 +60,7 @@ store.on('stateChanged', function(newState, oldState) {
 const { lastDirectory, globalShortcut } = store.getState();
 
 documentHelper.init(store);
+ui.init(store);
 documentHelper.appendDirectories(lastDirectory);
 
 ipcRenderer.send('register-shortcut-open', globalShortcut);

@@ -7,7 +7,6 @@ const command = require('../core/command');
 
 const $updateAvailable = document.getElementById('updateAvailable');
 const $savedDirectories = document.getElementById('btn-folders');
-const $consoleList = document.getElementById('consoleList');
 const $removeButton = document.getElementById('removeButton');
 const $browseButton = document.getElementById('browseButton');
 const $consoles = document.getElementById('btn-consoles');
@@ -45,14 +44,6 @@ const init = (localStore) => {
         store.setState({
             selectedPanel: 'directories',
             modalActive: selectedPanel !== 'directories' || !modalActive
-        });
-    });
-
-    $consoleList.addEventListener('change', (e) => {
-        const list = e.srcElement;
-        const option = list.options[list.selectedIndex].value;
-        store.setState({
-            lastConsole: option
         });
     });
 
