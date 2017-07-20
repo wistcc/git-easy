@@ -88,16 +88,15 @@ const init = (localStore) => {
     });
 
     document.onkeyup = (e) => {
-        const { filteredSubdirectories } = store.getState();
+        const { filteredSubdirectories, lastConsole } = store.getState();
         let { directoryFilter } = store.getState();
 
         const key = Number(e.key);
 
         if (key >= 0) {
-            const con = $consoleList.options[$consoleList.selectedIndex].value;
             const sub = filteredSubdirectories[key];
             const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
-            command.exec(currentPath, con);
+            command.exec(currentPath, lastConsole);
         }
 
         //Esc was pressed
