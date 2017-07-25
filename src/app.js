@@ -9,25 +9,28 @@ const initialState = storage.getInitialState();
 
 const store = new Store(initialState);
 
-store.on('stateChanged', function(newState, oldState) {
-    if(newState.lastConsole !== oldState.lastConsole)
+store.on('stateChanged', (newState, oldState) => {
+    if (newState.lastConsole !== oldState.lastConsole) {
         storage.setLastConsole(newState.lastConsole);
+    }
 
     if (newState.directoryFilter !== oldState.directoryFilter) {
         const regx = new RegExp(newState.directoryFilter, 'i');
         const filteredSubdirectories = newState.subdirectories.filter(s => regx.test(s.folder));
-        
-        this.setState({
+
+        store.setState({
             filteredSubdirectories,
+            selectedSubdirectory: null
         });
-        
+
         ui.printFilter(newState.directoryFilter);
     }
 
     if (newState.subdirectories !== oldState.subdirectories) {
-        this.setState({
+        store.setState({
             filteredSubdirectories: newState.subdirectories,
             directoryFilter: '',
+            selectedSubdirectory: null
         });
     }
 
@@ -42,19 +45,29 @@ store.on('stateChanged', function(newState, oldState) {
         ui.printSavedDirectories(newState.directories, newState.lastDirectory);
     }
 
-    if (newState.filteredSubdirectories !== oldState.filteredSubdirectories)
+    if (newState.filteredSubdirectories !== oldState.filteredSubdirectories) {
         ui.printSubdirectories(newState.filteredSubdirectories);
-    
+    }
+
     if (newState.selectedPanel !== oldState.selectedPanel) {
-        if(newState.selectedPanel === 'consoles')
+        if (newState.selectedPanel === 'consoles') {
             ui.printConsoles(consoles.get(), newState.lastConsole);
-        else if (newState.selectedPanel === 'directories')
+        } else if (newState.selectedPanel === 'directories') {
             ui.printSavedDirectories(newState.directories, newState.lastDirectory);
+        }
     }
 
     if (newState.modalActive !== oldState.modalActive) {
         ui.toggleModal(newState.modalActive);
-    }    
+    }
+
+    if (newState.selectedSubdirectory !== oldState.selectedSubdirectory) {
+        if (newState.selectedSubdirectory !== null) {
+            documentHelper.selectSubdirectory();
+        } else {
+            documentHelper.deselectSubdirectory();
+        }
+    }
 });
 
 const { lastDirectory, globalShortcut } = store.getState();

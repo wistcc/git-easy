@@ -6,6 +6,7 @@ const { version } = require('../../package.json');
 const command = require('../core/command');
 
 const $updateAvailable = document.getElementById('updateAvailable');
+const $directoryList = document.getElementById('directoryList');
 const $savedDirectories = document.getElementById('btn-folders');
 const $removeButton = document.getElementById('removeButton');
 const $browseButton = document.getElementById('browseButton');
@@ -14,13 +15,88 @@ const $modal = document.querySelector('.wrap');
 
 let store = {};
 
+const openSubdirectory = (index) => {
+    const { filteredSubdirectories, lastConsole } = store.getState();
+    const sub = filteredSubdirectories[index];
+    const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
+    command.exec(currentPath, lastConsole);
+};
+
+const selectSubdirectory = () => {
+    const { selectedSubdirectory } = store.getState();
+    if (selectedSubdirectory === null) {
+        return;
+    }
+
+    const subdirectory = $directoryList.children[selectedSubdirectory];
+
+    subdirectory.classList.add('selected');
+
+    const buttonBoundaries = subdirectory.getBoundingClientRect();
+    const containerBoundaries = $directoryList.getBoundingClientRect();
+    if (buttonBoundaries.bottom > containerBoundaries.height &&
+        buttonBoundaries.top > containerBoundaries.height) {
+        subdirectory.scrollIntoView(false);
+    }
+    if (buttonBoundaries.top < containerBoundaries.top) {
+        subdirectory.scrollIntoView();
+    }
+};
+
+const deselectSubdirectory = () => {
+    const { selectedSubdirectory } = store.getState();
+    if (selectedSubdirectory !== null) {
+        $directoryList.children[selectedSubdirectory].classList.remove('selected');
+    } else {
+        $directoryList.scrollTop = 0;
+    }
+};
+
+const selectSubdirectoryUp = () => {
+    const { selectedSubdirectory } = store.getState();
+    let index;
+
+    if (selectedSubdirectory !== null) {
+        deselectSubdirectory();
+        index = selectedSubdirectory - 1;
+
+        if (index < 0) {
+            index = 0;
+        }
+
+        store.setState({
+            selectedSubdirectory: index
+        });
+    }
+};
+
+const selectSubdirectoryDown = () => {
+    const { selectedSubdirectory } = store.getState();
+    let index;
+
+    if (selectedSubdirectory !== null) {
+        deselectSubdirectory();
+        index = selectedSubdirectory + 1;
+
+        if (index >= $directoryList.children.length) {
+            index = $directoryList.children.length - 1;
+        }
+    } else {
+        index = 0;
+    }
+
+    store.setState({
+        selectedSubdirectory: index
+    });
+};
+
 const init = (localStore) => {
     store = localStore;
 
-    document.addEventListener('click', ev => {
-        //TODO: modal state should be in the state rather than querying the DOM
-        if(
-            !$modal.contains(ev.target) 
+    document.addEventListener('click', (ev) => {
+        // TODO: modal state should be in the state rather than querying the DOM
+        if (
+            !$modal.contains(ev.target)
             && $modal.classList.contains('active')
             && !$consoles.contains(ev.target)
             && !$savedDirectories.contains(ev.target)
@@ -31,15 +107,15 @@ const init = (localStore) => {
         }
     });
 
-    $consoles.addEventListener('click', (e) => {
+    $consoles.addEventListener('click', () => {
         const { modalActive, selectedPanel } = store.getState();
         store.setState({
             selectedPanel: 'consoles',
             modalActive: selectedPanel !== 'consoles' || !modalActive
-        });       
+        });
     });
 
-    $savedDirectories.addEventListener('click', (e) => {
+    $savedDirectories.addEventListener('click', () => {
         const { modalActive, selectedPanel } = store.getState();
         store.setState({
             selectedPanel: 'directories',
@@ -55,17 +131,17 @@ const init = (localStore) => {
         });
     });
 
-    $removeButton.addEventListener("click", (ev) => {
+    $removeButton.addEventListener('click', () => {
         const { directories } = store.getState();
         const clonedDirectories = directories.slice(0);
         clonedDirectories.splice($savedDirectories.selectedIndex, 1);
         store.setState({
             lastDirectory: clonedDirectories[0] || '',
-            directories: clonedDirectories,
+            directories: clonedDirectories
         });
     });
 
-    $browseButton.addEventListener("click", () => {
+    $browseButton.addEventListener('click', () => {
         const { directories } = store.getState();
         ipcRenderer.send('mark-as-browsing');
         const paths = dialog.showOpenDialog({
@@ -76,44 +152,53 @@ const init = (localStore) => {
             const newDirectory = paths[0];
             const partialState = { lastDirectory: newDirectory };
 
-            if(!directories.includes(newDirectory))
+            if (!directories.includes(newDirectory)) {
                 partialState.directories = directories.concat(newDirectory);
-            
+            }
+
             store.setState(partialState);
         }
     });
 
-    $updateAvailable.addEventListener("click", () => {
+    $updateAvailable.addEventListener('click', () => {
         shell.openExternal('https://github.com/wistcc/git-easy/releases');
     });
 
     document.onkeyup = (e) => {
-        const { filteredSubdirectories, lastConsole } = store.getState();
+        const { selectedSubdirectory } = store.getState();
         let { directoryFilter } = store.getState();
 
         const key = Number(e.key);
 
         if (key >= 0) {
-            const sub = filteredSubdirectories[key];
-            const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
-            command.exec(currentPath, lastConsole);
+            openSubdirectory(key);
         }
 
-        //Esc was pressed
+        // Esc was pressed
         if (e.keyCode === 27) {
             ipcRenderer.send('hide-main-window');
         }
 
-        //Esc was pressed
-        if (e.keyCode === 27) {
-            ipcRenderer.send('hide-main-window');
-        }
-
-        //Backspace was pressed
+        // Backspace was pressed
         if (e.keyCode === 8) {
             store.setState({
                 directoryFilter: directoryFilter.slice(0, -1)
             });
+        }
+
+        // Key up was pressed
+        if (e.keyCode === 38) {
+            selectSubdirectoryUp();
+        }
+
+        // Key down was pressed
+        if (e.keyCode === 40) {
+            selectSubdirectoryDown();
+        }
+
+        // Enter was pressed
+        if (e.keyCode === 13) {
+            openSubdirectory(selectedSubdirectory);
         }
 
         // Any a-z letter was pressed
@@ -134,36 +219,36 @@ const appendDirectories = (directory) => {
     if (directory === 'All') {
         const { directories } = store.getState();
 
-        directories.forEach(dir => {
-            if(dir === 'All') return;
+        directories.forEach((dir) => {
+            if (dir === 'All') return;
 
             allSubDirectories.push(
                 ...fs.readdirSync(dir)
                     .map(sub => ({
                         root: dir,
-                        folder: sub,
-                    })),
+                        folder: sub
+                    }))
             );
         });
     } else {
         const subs = fs.readdirSync(directory);
         allSubDirectories = subs.map(sub => ({
-                root: directory,
-                folder: sub,
-            }));
+            root: directory,
+            folder: sub
+        }));
 
-        if (subs.includes(".git")) {
+        if (subs.includes('.git')) {
             currentDirectory = {
                 root: null,
-                folder: directory,
+                folder: directory
             };
         }
     }
 
-    const currentSubDirectories = allSubDirectories.filter(sub => {
+    const currentSubDirectories = allSubDirectories.filter((sub) => {
         const currentPath = path.join(sub.root, sub.folder);
         return fs.lstatSync(currentPath).isDirectory() &&
-            fs.readdirSync(currentPath).includes(".git");
+            fs.readdirSync(currentPath).includes('.git');
     });
 
     if (currentDirectory) {
@@ -171,17 +256,15 @@ const appendDirectories = (directory) => {
     }
 
     store.setState({
-        subdirectories: currentSubDirectories,
+        subdirectories: currentSubDirectories
     });
 };
 
 const checkForUpdates = () => {
     fetch('https://api.github.com/repos/wistcc/git-easy/tags')
-        .then(response => {
-            return response.json();
-        })
-        .then(data => {
-            const lastVersion = data[data.length -1].name.substr(1).split('.');
+        .then(response => response.json())
+        .then((data) => {
+            const lastVersion = data[data.length - 1].name.substr(1).split('.');
             const currentVersion = version.split('.');
             let showUpdateButton = false;
 
@@ -203,6 +286,7 @@ const checkForUpdates = () => {
 ipcRenderer.on('clear-filter', () => {
     store.setState({
         directoryFilter: '',
+        selectedSubdirectory: null
     });
 });
 
@@ -210,4 +294,6 @@ module.exports = {
     init,
     appendDirectories,
     checkForUpdates,
+    selectSubdirectory,
+    deselectSubdirectory
 };
