@@ -1,25 +1,25 @@
 const { dialog } = require('electron').remote;
 const { ipcRenderer, shell } = require('electron');
-const { version } = require('../../package.json');
 const fs = require('fs');
 const path = require('path');
+const { version } = require('../../package.json');
 const command = require('../core/command');
 
 const $updateAvailable = document.getElementById('updateAvailable');
-const $savedDirectories = document.getElementById('savedDirectories');
 const $directoryList = document.getElementById('directoryList');
-const $consoleList = document.getElementById('consoleList');
+const $savedDirectories = document.getElementById('btn-folders');
 const $removeButton = document.getElementById('removeButton');
 const $browseButton = document.getElementById('browseButton');
+const $consoles = document.getElementById('btn-consoles');
+const $modal = document.querySelector('.wrap');
 
 let store = {};
 
 const openSubdirectory = (index) => {
-    const { filteredSubdirectories } = store.getState();
-    const con = $consoleList.options[$consoleList.selectedIndex].value;
+    const { filteredSubdirectories, lastConsole } = store.getState();
     const sub = filteredSubdirectories[index];
     const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
-    command.exec(currentPath, con);
+    command.exec(currentPath, lastConsole);
 };
 
 const selectSubdirectory = () => {
@@ -93,11 +93,33 @@ const selectSubdirectoryDown = () => {
 const init = (localStore) => {
     store = localStore;
 
-    $consoleList.addEventListener('change', (e) => {
-        const list = e.srcElement;
-        const option = list.options[list.selectedIndex].value;
+    document.addEventListener('click', (ev) => {
+        // TODO: modal state should be in the state rather than querying the DOM
+        if (
+            !$modal.contains(ev.target)
+            && $modal.classList.contains('active')
+            && !$consoles.contains(ev.target)
+            && !$savedDirectories.contains(ev.target)
+        ) {
+            store.setState({
+                modalActive: false
+            });
+        }
+    });
+
+    $consoles.addEventListener('click', () => {
+        const { modalActive, selectedPanel } = store.getState();
         store.setState({
-            lastConsole: option
+            selectedPanel: 'consoles',
+            modalActive: selectedPanel !== 'consoles' || !modalActive
+        });
+    });
+
+    $savedDirectories.addEventListener('click', () => {
+        const { modalActive, selectedPanel } = store.getState();
+        store.setState({
+            selectedPanel: 'directories',
+            modalActive: selectedPanel !== 'directories' || !modalActive
         });
     });
 

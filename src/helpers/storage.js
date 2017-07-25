@@ -16,7 +16,9 @@ const defaultData = {
     subdirectories: [],
     filteredSubdirectories: [],
     lastConsole: {},
-    globalShortcut: 'CommandOrControl+Shift+`'
+    globalShortcut: 'CommandOrControl+Shift+`',
+    modalActive: false,
+    selectedPanel: ''
 };
 
 const save = () => {

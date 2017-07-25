@@ -1,35 +1,49 @@
 const command = require('../core/command');
 
-const addSubDirectoryButton = (name, directory, buttonIndex, shouldPrintDirectory) => {
-    const button = document.createElement('div');
+const $ul = document.querySelector('.wrap .content ul');
+const $modal = document.querySelector('.wrap');
+let store = {};
+
+exports.init = (localStore) => {
+    store = localStore;
+};
+
+const clearUl = () => {
+    if ($ul.hasChildNodes()) {
+        $ul.innerHTML = '';
+    }
+};
+
+const addSubDirectoryButton = (name, directory, buttonIndex) => {
     const $text = document.createElement('div');
     const $path = document.createElement('div');
-    const $consoleList = document.getElementById('consoleList');
+    const $button = document.createElement('div');
+    const $number = document.createElement('div');
 
     $path.innerHTML = directory;
-    $text.innerHTML = buttonIndex >= 0 ? ` [${buttonIndex}]${name}` : name;
+    $number.innerHTML = buttonIndex >= 0 ? buttonIndex : '';
+    $text.innerHTML = name;
 
-    button.className = 'directoryButton';
+    $button.className = 'directoryButton';
     $text.className = 'inner-text';
     $path.className = 'inner-path';
+    $number.className = 'inner-number';
 
-    button.setAttribute('data-path', directory);
+    $button.setAttribute('data-path', directory);
 
-    button.appendChild($text);
+    $button.appendChild($number);
+    $button.appendChild($text);
+    $button.appendChild($path);
 
-    if (shouldPrintDirectory) {
-        button.appendChild($path);
-        button.classList.add('with-path');
-    }
-
-    button.addEventListener('click', (e) => {
-        const con = $consoleList.options[$consoleList.selectedIndex].value;
-        const path = e.srcElement.getAttribute('data-path') ||
-            e.srcElement.parentElement.getAttribute('data-path');
-        command.exec(path, con);
+    $button.addEventListener('click', () => {
+        const {
+            lastConsole
+        } = store.getState();
+        const path = this.getAttribute('data-path');
+        command.exec(path, lastConsole);
     });
 
-    return button;
+    return $button;
 };
 
 exports.printSubdirectories = (subdirectories) => {
@@ -41,11 +55,10 @@ exports.printSubdirectories = (subdirectories) => {
 
     return subdirectories
         .map((s, i) => addSubDirectoryButton(
-                s.folder,
-                s.root ? `${s.root}/${s.folder}` : s.folder,
-                i < 10 ? i : -1,
-                subdirectories.filter(ss => ss.folder === s.folder).length > 1
-                ))
+            s.folder,
+            s.root ? `${s.root}/${s.folder}` : s.folder,
+            i < 10 ? i : -1
+        ))
         .forEach(b => $directoryList.appendChild(b));
 };
 
@@ -54,43 +67,57 @@ exports.printFilter = (filter) => {
 };
 
 exports.printSavedDirectories = (directories, lastDirectory) => {
-    const $savedDirectories = document.getElementById('savedDirectories');
+    // If there are at least 2 folders, add `All` option
+    const savedDirectories = directories.length <= 2 ? ['All'].concat(directories) : directories;
+    clearUl();
 
-    while ($savedDirectories.hasChildNodes()) {
-        $savedDirectories.removeChild($savedDirectories.lastChild);
-    }
-    let showAllOption = true;
-    if (directories.length <= 2) {
-        showAllOption = false;
-    }
-
-    directories.forEach((directory) => {
-        if (!showAllOption && directory === 'All') return;
-
-        const option = document.createElement('option');
+    savedDirectories.forEach((directory) => {
+        const option = document.createElement('li');
         option.value = directory;
         option.innerHTML = directory;
 
-        if (lastDirectory && lastDirectory === directory) {
-            option.selected = true;
+        if (lastDirectory === directory) {
+            option.classList.add('selected');
         }
 
-        $savedDirectories.appendChild(option);
+        option.addEventListener('click', () => {
+            store.setState({
+                lastDirectory: directory,
+                modalActive: false
+            });
+        });
+
+        $ul.appendChild(option);
     });
 };
 
 exports.printConsoles = (consoles, lastConsole) => {
-    const $consoleList = document.getElementById('consoleList');
+    clearUl();
 
     Object.keys(consoles).forEach((key) => {
-        const option = document.createElement('option');
-        option.value = key;
-        option.innerHTML = key;
+        const $li = document.createElement('li');
+        $li.value = key;
+        $li.innerHTML = key;
 
         if (lastConsole && lastConsole === key) {
-            option.selected = true;
+            $li.classList.add('selected');
         }
 
-        $consoleList.appendChild(option);
+        $li.addEventListener('click', () => {
+            store.setState({
+                lastConsole: key,
+                modalActive: false
+            });
+        });
+
+        $ul.appendChild($li);
     });
+};
+
+exports.toggleModal = (activate) => {
+    if (activate) {
+        $modal.classList.add('active');
+    } else {
+        $modal.classList.remove('active');
+    }
 };

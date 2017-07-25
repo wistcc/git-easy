@@ -49,6 +49,18 @@ store.on('stateChanged', (newState, oldState) => {
         ui.printSubdirectories(newState.filteredSubdirectories);
     }
 
+    if (newState.selectedPanel !== oldState.selectedPanel) {
+        if (newState.selectedPanel === 'consoles') {
+            ui.printConsoles(consoles.get(), newState.lastConsole);
+        } else if (newState.selectedPanel === 'directories') {
+            ui.printSavedDirectories(newState.directories, newState.lastDirectory);
+        }
+    }
+
+    if (newState.modalActive !== oldState.modalActive) {
+        ui.toggleModal(newState.modalActive);
+    }
+
     if (newState.selectedSubdirectory !== oldState.selectedSubdirectory) {
         if (newState.selectedSubdirectory !== null) {
             documentHelper.selectSubdirectory();
@@ -58,12 +70,11 @@ store.on('stateChanged', (newState, oldState) => {
     }
 });
 
-const { lastDirectory, directories, globalShortcut, lastConsole } = store.getState();
+const { lastDirectory, globalShortcut } = store.getState();
 
 documentHelper.init(store);
+ui.init(store);
 documentHelper.appendDirectories(lastDirectory);
-ui.printConsoles(consoles.get(), lastConsole);
-ui.printSavedDirectories(directories, lastDirectory);
 
 ipcRenderer.send('register-shortcut-open', globalShortcut);
 

@@ -31,8 +31,9 @@
     "eslint-plugin-import": "^2.6.1"
   },
   "dependencies": {
-    "electron": "^1.7.3",
     "auto-launch": "^5.0.1",
-    "electron-winstaller": "^2.5.2"
+    "electron": "^1.7.3",
+    "electron-winstaller": "^2.5.2",
+    "font-awesome": "^4.7.0"
   }
 }
