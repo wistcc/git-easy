@@ -107,11 +107,6 @@ select {
     display: block;
 }
 
-.directoryButton:hover {
-    box-shadow: inset 0 0 0 2px var(--accent-color);
-    color: var(--accent-color) !important;
-}
-
 .hidden {
     display: none !important;
 }
