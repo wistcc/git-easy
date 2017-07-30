@@ -53,7 +53,7 @@ const deselectSubdirectory = () => {
     if (selectedSubdirectory !== null) {
         $directoryList.children[selectedSubdirectory].classList.remove('selected');
     } else {
-        $directoryList.scrollTop = 0;
+        $directoryList.parentElement.scrollTop = 0;
     }
 };
 
@@ -306,5 +306,6 @@ module.exports = {
     init,
     appendDirectories,
     checkForUpdates,
-    selectSubdirectory
+    selectSubdirectory,
+    deselectSubdirectory
 };
