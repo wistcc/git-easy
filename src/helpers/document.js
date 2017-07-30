@@ -18,6 +18,11 @@ let store = {};
 const openSubdirectory = (index) => {
     const { filteredSubdirectories, lastConsole } = store.getState();
     const sub = filteredSubdirectories[index];
+
+    if (!sub) {
+        return;
+    }
+
     const currentPath = sub.root ? path.join(sub.root, sub.folder) : sub.folder;
     command.exec(currentPath, lastConsole);
 };
