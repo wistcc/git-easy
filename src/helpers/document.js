@@ -66,7 +66,7 @@ const selectSubdirectoryUp = () => {
         index = selectedSubdirectory - 1;
 
         if (index < 0) {
-            index = 0;
+            index = null;
         }
 
         store.setState({
@@ -89,7 +89,7 @@ const selectSubdirectoryDown = () => {
     } else {
         index = 0;
     }
-
+console.log(index)
     store.setState({
         selectedSubdirectory: index
     });
