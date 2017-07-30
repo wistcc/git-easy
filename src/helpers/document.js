@@ -98,20 +98,6 @@ const selectSubdirectoryDown = () => {
 const init = (localStore) => {
     store = localStore;
 
-    document.addEventListener('click', (ev) => {
-        // TODO: modal state should be in the state rather than querying the DOM
-        if (
-            !$modal.contains(ev.target)
-            && $modal.classList.contains('active')
-            && !$consoles.contains(ev.target)
-            && !$savedDirectories.contains(ev.target)
-        ) {
-            store.setState({
-                modalActive: false
-            });
-        }
-    });
-
     $consoles.addEventListener('click', () => {
         const { modalActive, selectedPanel } = store.getState();
         store.setState({
@@ -168,6 +154,26 @@ const init = (localStore) => {
     $updateAvailable.addEventListener('click', () => {
         shell.openExternal('https://github.com/wistcc/git-easy/releases');
     });
+
+    document.onclick = (ev) => {
+        // TODO: modal state should be in the state rather than querying the DOM
+        if (
+            !$modal.contains(ev.target)
+            && $modal.classList.contains('active')
+            && !$consoles.contains(ev.target)
+            && !$savedDirectories.contains(ev.target)
+        ) {
+            store.setState({
+                modalActive: false
+            });
+        }
+    };
+
+    document.onkeydown = (e) => {
+        if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    };
 
     document.onkeyup = (e) => {
         const { selectedSubdirectory } = store.getState();
