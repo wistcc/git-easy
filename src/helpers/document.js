@@ -38,7 +38,7 @@ const selectSubdirectory = () => {
     subdirectory.classList.add('selected');
 
     const buttonBoundaries = subdirectory.getBoundingClientRect();
-    const containerBoundaries = $directoryList.getBoundingClientRect();
+    const containerBoundaries = $directoryList.parentElement.getBoundingClientRect();
     if (buttonBoundaries.bottom > containerBoundaries.height &&
         buttonBoundaries.top > containerBoundaries.height) {
         subdirectory.scrollIntoView(false);
@@ -89,7 +89,7 @@ const selectSubdirectoryDown = () => {
     } else {
         index = 0;
     }
-console.log(index)
+
     store.setState({
         selectedSubdirectory: index
     });
