@@ -284,6 +284,7 @@ const checkForUpdates = () => {
 
 // When main-window is hidden, reset filter
 ipcRenderer.on('clear-filter', () => {
+    deselectSubdirectory();
     store.setState({
         directoryFilter: '',
         selectedSubdirectory: null
@@ -294,6 +295,5 @@ module.exports = {
     init,
     appendDirectories,
     checkForUpdates,
-    selectSubdirectory,
-    deselectSubdirectory
+    selectSubdirectory
 };
