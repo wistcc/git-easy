@@ -35,11 +35,12 @@ const addSubDirectoryButton = (name, directory, buttonIndex) => {
     $button.appendChild($text);
     $button.appendChild($path);
 
-    $button.addEventListener('click', () => {
+    $button.addEventListener('click', (e) => {
         const {
             lastConsole
         } = store.getState();
-        const path = this.getAttribute('data-path');
+        const path = e.srcElement.getAttribute('data-path') ||
+             e.srcElement.parentElement.getAttribute('data-path');
         command.exec(path, lastConsole);
     });
 
