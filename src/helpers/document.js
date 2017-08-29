@@ -17,7 +17,7 @@ let store = {};
 
 const openSubdirectory = (index) => {
     const { filteredSubdirectories, lastConsole } = store.getState();
-    const sub = filteredSubdirectories[index];
+    const sub = filteredSubdirectories[index || 0];
 
     if (!sub) {
         return;
