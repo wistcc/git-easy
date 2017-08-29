@@ -1,6 +1,7 @@
 const { app } = require('electron').remote;
 const fs = require('fs');
 const path = require('path');
+const consoles = require('../core/consoles');
 
 const directoriesKey = 'directories';
 const lastDirectoryKey = 'lastDirectory';
@@ -8,14 +9,16 @@ const lastConsoleKey = 'lastConsole';
 const dataFilePath = path.join(app.getPath('userData'), 'data.json');
 let data = null;
 
+const defaultConsole = Object.keys(consoles.get())[0];
+
 const defaultData = {
-    directories: ['All'],
-    lastDirectory: '',
+    [directoriesKey]: ['All'],
+    [lastDirectoryKey]: '',
     directoryFilter: '',
     selectedSubdirectory: null,
     subdirectories: [],
     filteredSubdirectories: [],
-    lastConsole: {},
+    [lastConsoleKey]: defaultConsole,
     globalShortcut: 'CommandOrControl+Shift+`',
     modalActive: false,
     selectedPanel: ''
