@@ -164,7 +164,8 @@ const init = (localStore) => {
             && !$savedDirectories.contains(ev.target)
         ) {
             store.setState({
-                modalActive: false
+                modalActive: false,
+                selectedPanel: ''
             });
         }
     };
