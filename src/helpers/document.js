@@ -134,21 +134,22 @@ const init = (localStore) => {
 
     $browseButton.addEventListener('click', () => {
         const { directories } = store.getState();
-        ipcRenderer.send('mark-as-browsing');
-        const paths = dialog.showOpenDialog({
+        ipcRenderer.send('mark-as-browsing', { isBrowsing: true });
+        dialog.showOpenDialog({
             properties: ['openDirectory']
-        });
+        }, (paths) => {
+            if (paths) {
+                const newDirectory = paths[0];
+                const partialState = { lastDirectory: newDirectory };
 
-        if (paths) {
-            const newDirectory = paths[0];
-            const partialState = { lastDirectory: newDirectory };
+                if (!directories.includes(newDirectory)) {
+                    partialState.directories = directories.concat(newDirectory);
+                }
 
-            if (!directories.includes(newDirectory)) {
-                partialState.directories = directories.concat(newDirectory);
+                store.setState(partialState);
             }
-
-            store.setState(partialState);
-        }
+            ipcRenderer.send('mark-as-browsing', { isBrowsing: false });
+        });
     });
 
     $updateAvailable.addEventListener('click', () => {

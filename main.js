@@ -37,6 +37,12 @@ const hideWindow = () => {
     mainWindow.webContents.send('clear-filter');
 };
 
+const showWindow = () => {
+    if (!isBrowsing) {
+        mainWindow.show();
+    }
+};
+
 const createWindow = () => {
   // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -62,7 +68,6 @@ const createWindow = () => {
         if (!isBrowsing) {
             hideWindow();
         }
-        isBrowsing = false;
     });
 
     // Open the DevTools.
@@ -94,7 +99,7 @@ app.on('ready', () => {
         {
             label: 'Show App',
             click() {
-                mainWindow.show();
+                showWindow();
             }
         },
         {
@@ -108,7 +113,7 @@ app.on('ready', () => {
     tray.setContextMenu(contextMenu);
 
     tray.on('click', () => {
-        mainWindow.show();
+        showWindow();
     });
 });
 
@@ -129,8 +134,13 @@ app.on('activate', () => {
     }
 });
 
-ipcMain.on('mark-as-browsing', () => {
-    isBrowsing = true;
+ipcMain.on('mark-as-browsing', (e, arg) => {
+    isBrowsing = arg.isBrowsing;
+    if (isBrowsing) {
+        hideWindow();
+    } else {
+        showWindow();
+    }
 });
 
 ipcMain.on('hide-main-window', () => {
@@ -141,6 +151,6 @@ ipcMain.on('register-shortcut-open', (_, shortcut) => {
     /* eslint-disable no-console */
     console.log('Global shortcut registered: ', shortcut);
     globalShortcut.register(shortcut, () => {
-        mainWindow.show();
+        showWindow();
     });
 });
