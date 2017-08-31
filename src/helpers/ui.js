@@ -2,6 +2,7 @@ const command = require('../core/command');
 
 const $ul = document.querySelector('.wrap .content ul');
 const $modal = document.querySelector('.wrap');
+
 let store = {};
 
 exports.init = (localStore) => {
@@ -84,7 +85,8 @@ exports.printSavedDirectories = (directories, lastDirectory) => {
         option.addEventListener('click', () => {
             store.setState({
                 lastDirectory: directory,
-                modalActive: false
+                modalActive: false,
+                selectedPanel: ''
             });
         });
 
@@ -107,7 +109,8 @@ exports.printConsoles = (consoles, lastConsole) => {
         $li.addEventListener('click', () => {
             store.setState({
                 lastConsole: key,
-                modalActive: false
+                modalActive: false,
+                selectedPanel: ''
             });
         });
 
