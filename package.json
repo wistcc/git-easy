@@ -28,12 +28,12 @@
     "electron-packager": "^8.7.2",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.2.0",
-    "eslint-plugin-import": "^2.6.1"
+    "eslint-plugin-import": "^2.6.1",
+    "electron-winstaller": "^2.5.2"
   },
   "dependencies": {
     "auto-launch": "^5.0.1",
     "electron": "^1.7.3",
-    "electron-winstaller": "^2.5.2",
     "font-awesome": "^4.7.0"
   }
 }
