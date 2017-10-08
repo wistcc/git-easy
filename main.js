@@ -1,23 +1,65 @@
-// Import parts of electron to use
-const { app, BrowserWindow } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  globalShortcut,
+  ipcMain,
+  Tray,
+  Menu
+} = require('electron');
 const path = require('path');
 const url = require('url');
+const AutoLaunch = require('auto-launch');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow;
-
-// Keep a reference for dev mode
+let mainWindow = null;
+let tray = null;
+let isBrowsing = false;
 let dev = false;
+
+const gitEasyAutoLauncher = new AutoLaunch({
+  name: 'git-easy',
+  isHidden: true,
+  mac: {
+    useLaunchAgent: true
+  }
+});
+
+gitEasyAutoLauncher.isEnabled().then((enabled) => {
+  if (enabled || process.env.NODE_ENV === 'development') return;
+  gitEasyAutoLauncher.enable();
+});
+
+// TODO: emit a broader hide-window event
+const hideWindow = () => {
+  mainWindow.hide();
+  mainWindow.webContents.send('clear-filter');
+};
+
+const showWindow = () => {
+  if (!isBrowsing) {
+    mainWindow.show();
+  }
+};
+// Keep a reference for dev mode
 if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath)) {
   dev = true;
 }
 
-function createWindow() {
+const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 1024, height: 768, show: false
+    width: 350,
+    height: 450,
+    show: false,
+    skipTaskbar: true,
+    frame: false,
+    minHeight: 250,
+    minWidth: 250
   });
+
+
+  mainWindow.setMenu(null);
 
   // and load the index.html of the app.
   let indexPath;
@@ -38,12 +80,17 @@ function createWindow() {
 
   mainWindow.loadURL(indexPath);
 
+  mainWindow.on('blur', () => {
+    if (!isBrowsing) {
+      hideWindow();
+    }
+  });
+
   // Don't show until we are ready and loaded
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
     // Open the DevTools automatically if developing
     if (dev) {
-      mainWindow.webContents.openDevTools();
+      // mainWindow.webContents.openDevTools();
     }
   });
 
@@ -51,12 +98,42 @@ function createWindow() {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-}
+};
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  createWindow();
+  // TODO: create proper enum helpers
+  if (/^darwin/.test(process.platform)) {
+    app.dock.hide();
+  }
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: 'Show App',
+      click() {
+        showWindow();
+      }
+    },
+    {
+      label: 'Quit',
+      click() {
+        app.isQuiting = true;
+        app.quit();
+      }
+    }
+  ]);
+
+  tray = new Tray(path.join(__dirname, '/src/assets/images/icon.png'));
+  tray.setToolTip('Git Easy');
+  tray.setContextMenu(contextMenu);
+
+  tray.on('click', () => {
+    showWindow();
+  });
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -73,4 +150,25 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on('mark-as-browsing', (e, arg) => {
+  isBrowsing = arg.isBrowsing;
+  if (isBrowsing) {
+    hideWindow();
+  } else {
+    showWindow();
+  }
+});
+
+ipcMain.on('hide-main-window', () => {
+  hideWindow();
+});
+
+ipcMain.on('register-shortcut-open', (_, shortcut) => {
+    /* eslint-disable no-console */
+  console.log('Global shortcut registered: ', shortcut);
+  globalShortcut.register(shortcut, () => {
+    showWindow();
+  });
 });
