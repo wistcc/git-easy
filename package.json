@@ -11,7 +11,9 @@
     "plinux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds",
     "cimac": "electron-installer-dmg ./release-builds/git-easy-darwin-x64/git-easy.app git-easy --out=release-builds --overwrite",
     "ciwin": "node src/installers/win/createInstaller.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dev": "webpack-dev-server --hot --host 0.0.0.0 --config=./webpack.dev.config.js",
+    "prod": "webpack --config webpack.build.config.js && electron --noDevServer ."
   },
   "repository": "https://github.com/wistcc/git-easy",
   "keywords": [
@@ -23,17 +25,40 @@
   "author": "wistcc <wistcc@gmail.com> http://winnercrespo.com",
   "license": "ISC",
   "devDependencies": {
-    "cross-env": "^5.0.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-react": "^6.24.1",
+    "babili-webpack-plugin": "^0.1.2",
+    "cross-env": "^5.0.5",
+    "css-loader": "^0.28.7",
+    "electron": "^1.7.8",
     "electron-installer-dmg": "^0.2.1",
-    "electron-packager": "^8.7.2",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb-base": "^11.2.0",
+    "electron-packager": "^9.1.0",
+    "eslint": "^4.8.0",
+    "eslint-config-airbnb": "^16.0.0",
+    "electron-winstaller": "^2.5.2",
+    "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.6.1",
-    "electron-winstaller": "^2.5.2"
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^7.4.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "extract-text-webpack-plugin": "^3.0.1",
+    "file-loader": "^1.1.5",
+    "html-webpack-plugin": "^2.30.1",
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.9.1"
   },
   "dependencies": {
     "auto-launch": "^5.0.1",
-    "electron": "^1.7.3",
-    "font-awesome": "^4.7.0"
+    "electron-winstaller": "^2.5.2",
+    "font-awesome": "^4.7.0",
+    "prop-types": "^15.6.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
   }
 }
