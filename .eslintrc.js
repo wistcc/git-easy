@@ -8,11 +8,11 @@ module.exports = {
         "comma-dangle": ["error", {
             "functions": "never",
         }],
-        "indent": [2, 4],
         "space-before-function-paren": [
             "error",
             "never"
         ],
-        'import/no-unresolved': 0
+        'import/no-unresolved': 0,
+        'import/no-extraneous-dependencies': 0
     }
 };
