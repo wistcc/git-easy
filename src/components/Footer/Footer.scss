@@ -1,0 +1,26 @@
+@import '../../styles/variables.scss';
+
+.footer {
+    background-color: $dark-primary-color;
+    display: flex;
+    justify-content: space-around;
+    flex-shrink: 0;
+    min-height: 45px;
+
+
+    .btn-bottom:hover {
+        background: $accent-color;
+        border-color: $accent-color;
+        color: #fff;
+    }
+
+    .btn-bottom {
+        transition: background-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, color 0.2s ease-in-out;
+        background-color: transparent;
+        border: 0;
+        color: #ffffff;
+        cursor: pointer;
+        flex-grow: 1;
+        justify-content: center;
+    }
+}
